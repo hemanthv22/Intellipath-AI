@@ -1,0 +1,1839 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Premium AI Resume Builder - IntelliPath</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Merriweather:wght@400;700;900&family=Fira+Code:wght@400;500&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/dashboard.css">
+
+    <style>
+        /* --- LAYOUT FIXES --- */
+
+
+        :root {
+    --bg-main: #081228;
+    --bg-sidebar: #0b1020;
+    --bg-card: #111827;
+    --text-main: #ffffff;
+    --text-secondary: #9ca3af;
+    --border: #26324a;
+}
+
+body.light-mode {
+    --bg-main: #f5f7fb;
+    --bg-sidebar: #ffffff;
+    --bg-card: #ffffff;
+    --text-main: #111827;
+    --text-secondary: #6b7280;
+    --border: #e5e7eb;
+}
+
+body {
+    background: var(--bg-main);
+    color: var(--text-main);
+}
+
+.sidebar {
+    background: var(--bg-sidebar);
+}
+
+.topbar,
+.header {
+    background: var(--bg-sidebar);
+}
+
+.main-content,
+.dashboard-content,
+.dashboard-container {
+    background: var(--bg-main);
+}
+
+.stat-card,
+.career-card,
+.quick-actions,
+.action-card,
+.feature-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+}
+
+h1, h2, h3, h4, h5 {
+    color: var(--text-main);
+}
+
+p,
+span,
+label {
+    color: var(--text-secondary);
+}
+
+
+ś
+        html,
+        body.modern-dark-body {
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            overflow: hidden;
+            background: #0F172A;
+        }
+
+        .dashboard-layout {
+            height: 100vh;
+            display: flex;
+            overflow: hidden;
+        }
+
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .topbar {
+            flex-shrink: 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 30px;
+            border-bottom: 1px solid var(--glass-border);
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(12px);
+            z-index: 20;
+        }
+
+        .topbar-left {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .topbar-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: white;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .topbar-actions {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 15px;
+        }
+
+        /* --- BUILDER SPLIT LAYOUT --- */
+        .builder-workspace {
+            flex: 1;
+            display: flex;
+            overflow: hidden;
+            position: relative;
+            z-index: 10;
+        }
+
+        .builder-panel {
+            width: 50%;
+            max-width: 650px;
+            background: rgba(15, 23, 42, 0.7);
+            backdrop-filter: blur(20px);
+            border-right: 1px solid var(--glass-border);
+            display: flex;
+            flex-direction: column;
+            box-shadow: 10px 0 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .builder-header {
+            padding: 20px 30px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .builder-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 30px;
+            scroll-behavior: smooth;
+        }
+
+        .builder-content::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .builder-content::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+        }
+
+        .builder-footer {
+            padding: 20px 30px;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(0, 0, 0, 0.3);
+        }
+
+        .preview-panel {
+            flex: 1;
+            background: #1E293B;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow: hidden;
+            background-image: radial-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
+
+        .preview-toolbar {
+            padding: 15px 30px;
+            background: rgba(15, 23, 42, 0.9);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 5;
+            backdrop-filter: blur(10px);
+        }
+
+        .preview-scroll-area {
+            flex: 1;
+            overflow-y: auto;
+            display: flex;
+            justify-content: center;
+            padding: 40px 20px;
+        }
+
+        .preview-scroll-area::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .preview-scroll-area::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 4px;
+        }
+
+        /* --- WIZARD UI --- */
+        .step-indicator {
+            display: flex;
+            justify-content: space-between;
+            position: relative;
+            margin-bottom: 10px;
+        }
+
+        .step-indicator::before {
+            content: '';
+            position: absolute;
+            top: 14px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: rgba(255, 255, 255, 0.1);
+            z-index: 1;
+        }
+
+        .step-dot {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: #0F172A;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: #94A3B8;
+            position: relative;
+            z-index: 2;
+            transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+        }
+
+        .step-dot.active {
+            background: var(--primary-glow);
+            border-color: var(--primary-glow);
+            color: white;
+            box-shadow: 0 0 15px rgba(79, 70, 229, 0.5);
+            transform: scale(1.1);
+        }
+
+        .step-dot.completed {
+            background: var(--secondary-glow);
+            border-color: var(--secondary-glow);
+            color: white;
+        }
+
+        .form-section {
+            display: none;
+            animation: fadeIn 0.4s ease forwards;
+        }
+
+        .form-section.active {
+            display: block;
+        }
+
+        .section-title {
+            color: white;
+            font-size: 1.5rem;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 700;
+        }
+
+        .section-desc {
+            color: #94A3B8;
+            font-size: 0.95rem;
+            margin-bottom: 30px;
+            line-height: 1.5;
+        }
+
+        .sub-section-title {
+            color: white;
+            font-size: 1.15rem;
+            margin: 25px 0 15px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* --- FORM ELEMENTS --- */
+        .form-group {
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .form-row-3 {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 15px;
+        }
+
+        .form-label {
+            display: block;
+            color: #E2E8F0;
+            font-size: 0.85rem;
+            margin-bottom: 8px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        .form-input,
+        .form-select {
+            width: 100%;
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 12px 14px;
+            color: white;
+            font-size: 0.95rem;
+            font-family: 'Inter', sans-serif;
+            transition: 0.3s;
+            box-sizing: border-box;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-input:focus,
+        .form-select:focus {
+            border-color: var(--primary-glow);
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.2);
+            outline: none;
+            background: rgba(0, 0, 0, 0.6);
+        }
+
+        textarea.form-input {
+            resize: vertical;
+            min-height: 100px;
+            line-height: 1.6;
+        }
+
+        .form-select {
+            appearance: none;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 10px center;
+            background-size: 1em;
+        }
+
+        .form-select option {
+            background: #0F172A;
+            color: white;
+        }
+
+        .jd-box {
+            background: rgba(56, 189, 248, 0.05);
+            border: 1px dashed rgba(56, 189, 248, 0.3);
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 25px;
+        }
+
+        .btn-ai-magic {
+            position: absolute;
+            right: 10px;
+            top: 32px;
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.15), rgba(79, 70, 229, 0.15));
+            color: #A78BFA;
+            border: 1px solid rgba(139, 92, 246, 0.3);
+            padding: 5px 12px;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            z-index: 5;
+        }
+
+        .btn-ai-magic:hover {
+            background: linear-gradient(135deg, #8B5CF6, #4F46E5);
+            color: white;
+            box-shadow: 0 4px 15px rgba(139, 92, 246, 0.4);
+            border-color: transparent;
+        }
+
+        .dynamic-item {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 20px;
+            position: relative;
+            transition: 0.3s;
+        }
+
+        .dynamic-item:hover {
+            border-color: rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .btn-remove-item {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.2);
+            color: #EF4444;
+            border-radius: 6px;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .btn-remove-item:hover {
+            background: #EF4444;
+            color: white;
+        }
+
+        .btn-add-item {
+            background: transparent;
+            border: 1px dashed rgba(255, 255, 255, 0.3);
+            color: #CBD5E1;
+            width: 100%;
+            padding: 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: 0.3s;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .btn-add-item:hover {
+            border-color: var(--primary-glow);
+            color: white;
+            background: rgba(79, 70, 229, 0.15);
+        }
+
+        /* --- THEME SELECTOR --- */
+        .theme-selector {
+            display: flex;
+            gap: 10px;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 5px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .theme-btn {
+            background: transparent;
+            border: none;
+            color: #94A3B8;
+            padding: 6px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.85rem;
+            transition: 0.3s;
+        }
+
+        .theme-btn.active {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+
+        /* Navigation Buttons */
+        .btn-nav {
+            appearance: none;
+            background: rgba(255, 255, 255, 0.05);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.3s;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .btn-nav:hover:not(:disabled) {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .btn-nav:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .btn-skip {
+            background: transparent;
+            border: none;
+            color: #94A3B8;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: 0.3s;
+            font-family: 'Inter', sans-serif;
+            text-decoration: underline;
+        }
+
+        .btn-skip:hover {
+            color: white;
+            background: rgba(255, 255, 255, 0.05);
+            text-decoration: none;
+        }
+
+        .btn-primary-glow {
+            background: linear-gradient(135deg, var(--primary-glow), var(--accent-glow));
+            color: white;
+            border: none;
+            padding: 10px 24px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.3s;
+            box-shadow: 0 4px 15px rgba(79, 70, 229, 0.3);
+            font-family: 'Inter', sans-serif;
+        }
+
+        .btn-primary-glow:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(79, 70, 229, 0.5);
+        }
+
+        /* --- THE A4 RESUME SHEET (PREVIEW) --- */
+        .resume-page {
+            width: 794px;
+            min-height: 1123px;
+            background: white;
+            color: #111;
+            padding: 40px 50px;
+            box-sizing: border-box;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.4);
+            transform-origin: top center;
+            transform: scale(0.85);
+            margin-bottom: -15%;
+            transition: all 0.3s ease;
+        }
+
+        /* DEFAULT (MINIMAL ATS) THEME */
+        .theme-minimal {
+            font-family: 'Merriweather', serif;
+            color: #000;
+        }
+
+        .theme-minimal .res-header {
+            text-align: center;
+            border-bottom: 1px solid #000;
+            padding-bottom: 15px;
+            margin-bottom: 15px;
+        }
+
+        .theme-minimal .res-name {
+            font-size: 24px;
+            font-weight: 900;
+            text-transform: uppercase;
+            margin: 0 0 5px 0;
+            letter-spacing: 1px;
+        }
+
+        .theme-minimal .res-contact {
+            font-size: 10.5px;
+            color: #333;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .theme-minimal .res-section {
+            margin-bottom: 16px;
+        }
+
+        .theme-minimal .res-section-title {
+            font-size: 13px;
+            font-weight: 700;
+            text-transform: uppercase;
+            border-bottom: 1px solid #000;
+            padding-bottom: 2px;
+            margin-bottom: 8px;
+            letter-spacing: 0.5px;
+        }
+
+        .theme-minimal .res-text {
+            font-size: 10.5px;
+            line-height: 1.5;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .theme-minimal .res-item {
+            margin-bottom: 10px;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .theme-minimal .res-item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            margin-bottom: 2px;
+        }
+
+        .theme-minimal .res-item-title {
+            font-weight: 700;
+            font-size: 11.5px;
+        }
+
+        .theme-minimal .res-item-subtitle {
+            font-weight: 600;
+            font-size: 10.5px;
+            font-style: italic;
+            color: #222;
+        }
+
+        .theme-minimal .res-item-date {
+            font-size: 10.5px;
+            font-weight: 500;
+        }
+
+        .theme-minimal .res-bullets {
+            margin: 4px 0 0 16px;
+            padding: 0;
+            font-size: 10.5px;
+            line-height: 1.45;
+        }
+
+        .theme-minimal .res-bullets li {
+            margin-bottom: 3px;
+        }
+
+        .theme-minimal .skill-category {
+            font-weight: 700;
+            font-size: 10.5px;
+        }
+
+        .theme-minimal .res-inline-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            font-size: 10.5px;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .theme-minimal .res-inline-list span {
+            border-right: 1px solid #ccc;
+            padding-right: 10px;
+        }
+
+        .theme-minimal .res-inline-list span:last-child {
+            border: none;
+        }
+
+        /* MODERN PROFESSIONAL THEME */
+        .theme-modern {
+            font-family: 'Inter', sans-serif;
+            color: #1E293B;
+        }
+
+        .theme-modern .res-header {
+            text-align: left;
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+        }
+
+        .theme-modern .res-name {
+            font-size: 30px;
+            font-weight: 700;
+            color: #0F172A;
+            margin: 0 0 8px 0;
+            letter-spacing: -0.5px;
+        }
+
+        .theme-modern .res-contact {
+            font-size: 11px;
+            color: #64748B;
+        }
+
+        .theme-modern .res-section {
+            margin-bottom: 20px;
+        }
+
+        .theme-modern .res-section-title {
+            font-size: 14px;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: #2563EB;
+            margin-bottom: 10px;
+            letter-spacing: 1px;
+        }
+
+        .theme-modern .res-text {
+            font-size: 11px;
+            line-height: 1.6;
+            color: #334155;
+        }
+
+        .theme-modern .res-item {
+            margin-bottom: 12px;
+        }
+
+        .theme-modern .res-item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            margin-bottom: 2px;
+        }
+
+        .theme-modern .res-item-title {
+            font-weight: 700;
+            font-size: 12px;
+            color: #0F172A;
+        }
+
+        .theme-modern .res-item-subtitle {
+            font-weight: 500;
+            font-size: 11px;
+            color: #2563EB;
+        }
+
+        .theme-modern .res-item-date {
+            font-size: 11px;
+            color: #64748B;
+            font-weight: 500;
+        }
+
+        .theme-modern .res-bullets {
+            margin: 5px 0 0 15px;
+            padding: 0;
+            font-size: 11px;
+            line-height: 1.6;
+            color: #334155;
+        }
+
+        .theme-modern .res-bullets li {
+            margin-bottom: 4px;
+        }
+
+        .theme-modern .skill-category {
+            font-weight: 700;
+            font-size: 11px;
+            color: #0F172A;
+        }
+
+        .theme-modern .res-inline-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            font-size: 11px;
+        }
+
+        .theme-modern .res-inline-list span {
+            background: #F1F5F9;
+            padding: 2px 8px;
+            border-radius: 4px;
+            color: #334155;
+        }
+
+        /* TECH / AI ENGINEER THEME */
+        .theme-tech {
+            font-family: 'Inter', sans-serif;
+            color: #111;
+        }
+
+        .theme-tech .res-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid #10B981;
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+        }
+
+        .theme-tech .res-name {
+            font-size: 26px;
+            font-weight: 800;
+            color: #111;
+            margin: 0;
+        }
+
+        .theme-tech .res-contact {
+            font-size: 10px;
+            color: #444;
+            text-align: right;
+            line-height: 1.5;
+            font-family: 'Fira Code', monospace;
+        }
+
+        .theme-tech .res-contact span {
+            display: block;
+            margin: 0;
+        }
+
+        .theme-tech .res-section {
+            margin-bottom: 18px;
+        }
+
+        .theme-tech .res-section-title {
+            font-size: 13px;
+            font-weight: 800;
+            text-transform: uppercase;
+            color: #111;
+            border-bottom: 1px solid #E2E8F0;
+            padding-bottom: 4px;
+            margin-bottom: 10px;
+        }
+
+        .theme-tech .res-text {
+            font-size: 11px;
+            line-height: 1.6;
+        }
+
+        .theme-tech .res-item {
+            margin-bottom: 12px;
+        }
+
+        .theme-tech .res-item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            margin-bottom: 2px;
+        }
+
+        .theme-tech .res-item-title {
+            font-weight: 700;
+            font-size: 12px;
+        }
+
+        .theme-tech .res-item-subtitle {
+            font-weight: 500;
+            font-size: 11px;
+            color: #10B981;
+        }
+
+        .theme-tech .res-item-date {
+            font-size: 10.5px;
+            color: #64748B;
+            font-family: 'Fira Code', monospace;
+        }
+
+        .theme-tech .res-bullets {
+            margin: 5px 0 0 15px;
+            padding: 0;
+            font-size: 11px;
+            line-height: 1.5;
+        }
+
+        .theme-tech .skill-category {
+            font-weight: 700;
+            font-size: 11px;
+            background: #111;
+            color: white;
+            padding: 2px 6px;
+            border-radius: 4px;
+            margin-right: 5px;
+        }
+
+        .theme-tech .res-inline-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            font-size: 10px;
+            font-family: 'Fira Code', monospace;
+        }
+
+        .theme-tech .res-inline-list span {
+            border: 1px solid #E2E8F0;
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Dashboard Analytics Widget */
+        .analytics-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .analytics-card {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .circular-chart {
+            position: relative;
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 10px auto;
+        }
+
+        .circular-bg {
+            fill: none;
+            stroke: rgba(255, 255, 255, 0.1);
+            stroke-width: 3.5;
+        }
+
+        .circular-path {
+            fill: none;
+            stroke-width: 3.5;
+            stroke-linecap: round;
+            animation: progress 1s ease-out forwards;
+        }
+
+        .circular-text {
+            font-family: 'Inter', sans-serif;
+            font-size: 8.5px;
+            font-weight: 700;
+            fill: white;
+            alignment-baseline: middle;
+        }
+
+
+        .light-mode {
+    background: #f5f7fb;
+    color: #111827;
+}
+
+.light-mode .sidebar,
+.light-mode .dashboard-card,
+.light-mode .career-path-card,
+.light-mode .quick-actions {
+    background: #ffffff;
+    color: #111827;
+    border: 1px solid #e5e7eb;
+}
+
+.light-mode .navbar {
+    background: #ffffff;
+}
+
+.light-mode .stat-card {
+    background: #ffffff;
+}
+
+
+        .theme-toggle {
+    width: 45px;
+    height: 45px;
+    border: none;
+    border-radius: 50%;
+    background: rgba(99, 102, 241, 0.15);
+    color: #6366f1;
+    cursor: pointer;
+    margin-right: 15px;
+    transition: all 0.3s ease;
+}
+
+.theme-toggle:hover {
+    transform: scale(1.05);
+}
+        @keyframes progress {
+            0% {
+                stroke-dasharray: 0 100;
+            }
+        }
+    </style>
+</head>
+
+<body class="modern-dark-body">
+    <div class="ambient-blob blob-1"></div>
+    <div class="ambient-blob blob-2"></div>
+
+    <div class="dashboard-layout">
+
+        <nav class="sidebar modern-glass-sidebar" id="appSidebar">
+            <div class="sidebar-header">
+                <div class="logo-icon"><i class="fas fa-layer-group"></i></div>
+                <h2 onclick="window.location.href='index.html'">Intelli<span>Path</span></h2>
+            </div>
+            <ul class="nav-links">
+                <li onclick="window.location.href='dashboard.html'"><i class="fas fa-home"></i> Dashboard</li>
+                <li class="active" onclick="window.location.href='resume-creator.html'"><i
+                        class="fas fa-file-medical"></i> Resume Builder</li>
+                <li onclick="window.location.href='resume-builder.html'"><i class="fas fa-file-contract"></i> Resume
+                    Analyzer</li>
+                <li onclick="window.location.href='interview.html'"><i class="fas fa-microphone-alt"></i> AI Interview
+                </li>
+                <li onclick="window.location.href='assessment.html'"><i class="fas fa-chart-pie"></i> Skill Gap</li>
+                <li onclick="window.location.href='roadmap.html'"><i class="fas fa-map-signs"></i> Roadmap</li>
+                <li onclick="window.location.href='jobs.html'"><i class="fas fa-chart-line"></i> Find Jobs</li>
+                <li onclick="window.location.href='ai-assistant.html'"><i class="fas fa-robot"></i> AI Assistant</li>
+                <li onclick="window.location.href='settings.html'"><i class="fas fa-cog"></i> Settings</li>
+            </ul>
+            <ul class="nav-links sidebar-footer">
+                <li id="logoutBtn" class="logout-item"><i class="fas fa-sign-out-alt"></i> Logout</li>
+            </ul>
+        </nav>
+
+        <main class="main-content">
+            <header class="topbar">
+                <div class="topbar-left">
+                    <h1 class="topbar-title">IntelliPath <span style="color: var(--primary-glow);">Builder</span></h1>
+                </div>
+                <button id="themeToggle" class="theme-toggle">
+    <i class="fas fa-moon"></i>
+</button>
+                <div class="topbar-actions">
+                    <div id="userProfileDisplay" class="modern-profile-pill" onclick="window.location.href='/settings.html'" style="cursor: pointer;">
+    <div class="avatar"><i class="fas fa-user"></i></div>
+    <span id="userNameText">Loading...</span>
+</div>
+                </div>
+            </header>
+
+            <div class="builder-workspace">
+
+                <div class="builder-panel">
+                    <div class="builder-header">
+                        <div class="step-indicator" id="stepIndicator">
+                            <div class="step-dot active" onclick="jumpToStep(1)">1</div>
+                            <div class="step-dot" onclick="jumpToStep(2)">2</div>
+                            <div class="step-dot" onclick="jumpToStep(3)">3</div>
+                            <div class="step-dot" onclick="jumpToStep(4)">4</div>
+                            <div class="step-dot" onclick="jumpToStep(5)">5</div>
+                            <div class="step-dot" onclick="jumpToStep(6)"><i class="fas fa-rocket"></i></div>
+                        </div>
+                    </div>
+
+                    <div class="builder-content" id="formContainer">
+
+                        <div class="form-section active" id="step1">
+                            <h2 class="section-title"><i class="fas fa-user-circle text-primary"></i> Personal Info</h2>
+                            <p class="section-desc">Ensure your contact information is professional and accessible.</p>
+
+                            <div class="form-group">
+                                <label class="form-label">Full Name</label>
+                                <input type="text" class="form-input r-trigger" id="f-name" placeholder="e.g. John Doe">
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label class="form-label">Email Address</label>
+                                    <input type="email" class="form-input r-trigger" id="f-email"
+                                        placeholder="e.g. john@email.com">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Phone Number</label>
+                                    <input type="text" class="form-input r-trigger" id="f-phone"
+                                        placeholder="e.g. +1 234 567 8900">
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label class="form-label">LinkedIn URL</label>
+                                    <input type="text" class="form-input r-trigger" id="f-linkedin"
+                                        placeholder="linkedin.com/in/username">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">GitHub / Portfolio</label>
+                                    <input type="text" class="form-input r-trigger" id="f-github"
+                                        placeholder="github.com/username">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-section" id="step2">
+                            <h2 class="section-title"><i class="fas fa-bullseye text-primary"></i> Summary & Tailoring
+                            </h2>
+                            <p class="section-desc">Write a strong objective or tailor it to a specific Job Description.
+                            </p>
+
+                            <div class="jd-box">
+                                <label class="form-label"><i class="fas fa-robot"></i> Target Job Description
+                                    (Optional)</label>
+                                <textarea class="form-input r-trigger" id="f-jd"
+                                    placeholder="Paste the job description here to calculate ATS Match Score..."></textarea>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Professional Summary</label>
+                                <button class="btn-ai-magic" onclick="enhanceSummary()"><i class="fas fa-magic"></i> AI
+                                    Tailor to JD</button>
+                                <textarea class="form-input r-trigger" id="f-summary"
+                                    placeholder="Briefly describe your career goals and top strengths..."></textarea>
+                            </div>
+                        </div>
+
+                        <div class="form-section" id="step3">
+                            <h2 class="section-title"><i class="fas fa-code text-primary"></i> Technical Skills</h2>
+                            <p class="section-desc">Enter skills comma-separated. The AI will categorize them
+                                automatically.</p>
+
+                            <div class="form-group">
+                                <label class="form-label">All Skills</label>
+                                <button class="btn-ai-magic" onclick="suggestSkills()"><i class="fas fa-magic"></i>
+                                    Optimize Keywords</button>
+                                <textarea class="form-input r-trigger" id="f-skills"
+                                    placeholder="e.g. Python, React, AWS, Docker, Machine Learning..."></textarea>
+                            </div>
+                            <div
+                                style="background: rgba(255,255,255,0.05); padding: 15px; border-radius: 8px; font-size: 0.85rem; color: var(--text-muted);">
+                                <i class="fas fa-info-circle text-primary"></i> <strong>Smart Categorization
+                                    Active:</strong> Your skills will be automatically sorted into Languages,
+                                Frameworks, and Tools on the preview.
+                            </div>
+                        </div>
+
+                        <div class="form-section" id="step4">
+                            <h2 class="section-title"><i class="fas fa-briefcase text-primary"></i> Experience &
+                                Internships</h2>
+                            <p class="section-desc">Add your professional roles and internships. Use AI to generate
+                                metric-driven bullets.</p>
+
+                            <h3 class="sub-section-title"><i class="fas fa-building text-primary"></i> Work Experience
+                            </h3>
+                            <div id="experienceContainer">
+                                <div class="dynamic-item">
+                                    <button class="btn-remove-item"
+                                        onclick="this.parentElement.remove(); triggerRender();"><i
+                                            class="fas fa-trash"></i></button>
+                                    <div class="form-row">
+                                        <div class="form-group"><label class="form-label">Job Title</label><input
+                                                type="text" class="form-input r-trigger f-exp-title"
+                                                placeholder="e.g. Senior Software Engineer"></div>
+                                        <div class="form-group"><label class="form-label">Company</label><input
+                                                type="text" class="form-input r-trigger f-exp-comp"
+                                                placeholder="e.g. Google"></div>
+                                    </div>
+                                    <div class="form-row">
+                                        <div class="form-group"><label class="form-label">Dates & Location</label><input
+                                                type="text" class="form-input r-trigger f-exp-date"
+                                                placeholder="e.g. Jan 2021 - Present | New York, NY"></div>
+                                    </div>
+                                    <div class="form-group" style="margin-bottom:0;">
+                                        <label class="form-label">Impact & Achievements</label>
+                                        <button class="btn-ai-magic" onclick="enhanceBullets(this)" style="top:25px;"><i
+                                                class="fas fa-magic"></i> AI Fix Bullets</button>
+                                        <textarea class="form-input r-trigger f-exp-desc"
+                                            placeholder="- Developed REST APIs..."></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                            <button class="btn-add-item" onclick="addExperience('experienceContainer')"><i
+                                    class="fas fa-plus"></i> Add Another Role</button>
+
+                            <h3 class="sub-section-title" style="margin-top: 40px;"><i
+                                    class="fas fa-user-graduate text-primary"></i> Internships</h3>
+                            <div id="internshipContainer">
+                            </div>
+                            <button class="btn-add-item" onclick="addExperience('internshipContainer')"><i
+                                    class="fas fa-plus"></i> Add Internship</button>
+                        </div>
+
+                        <div class="form-section" id="step5">
+                            <h2 class="section-title"><i class="fas fa-laptop-code text-primary"></i> Education & Extras
+                            </h2>
+                            <p class="section-desc">Highlight academic history, projects, certifications, and languages.
+                            </p>
+
+                            <h3 class="sub-section-title"><i class="fas fa-graduation-cap text-primary"></i> Education
+                            </h3>
+                            <div id="educationContainer">
+                                <div class="dynamic-item">
+                                    <button class="btn-remove-item"
+                                        onclick="this.parentElement.remove(); triggerRender();"><i
+                                            class="fas fa-trash"></i></button>
+                                    <div class="form-row">
+                                        <div class="form-group"><label class="form-label">Degree & Major</label><input
+                                                type="text" class="form-input r-trigger f-edu-deg"
+                                                placeholder="e.g. BS in Computer Science"></div>
+                                        <div class="form-group"><label class="form-label">University</label><input
+                                                type="text" class="form-input r-trigger f-edu-uni"
+                                                placeholder="e.g. Stanford University"></div>
+                                    </div>
+                                    <div class="form-row">
+                                        <div class="form-group"><label class="form-label">Dates / Year</label><input
+                                                type="text" class="form-input r-trigger f-edu-date"
+                                                placeholder="e.g. 2020 - 2024"></div>
+                                        <div class="form-group"><label class="form-label">GPA / Honors
+                                                (Optional)</label><input type="text"
+                                                class="form-input r-trigger f-edu-gpa"
+                                                placeholder="e.g. 3.8/4.0 GPA, Cum Laude"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <button class="btn-add-item" onclick="addEducation()"><i class="fas fa-plus"></i> Add
+                                Another Degree</button>
+
+                            <h3 class="sub-section-title" style="margin-top: 40px;"><i
+                                    class="fas fa-project-diagram text-primary"></i> Key Projects</h3>
+                            <div id="projectsContainer">
+                            </div>
+                            <button class="btn-add-item" onclick="addProject()"><i class="fas fa-plus"></i> Add
+                                Project</button>
+
+                            <h3 class="sub-section-title" style="margin-top: 40px;"><i
+                                    class="fas fa-trophy text-primary"></i> Achievements & Awards</h3>
+                            <div id="achievementsContainer"></div>
+                            <button class="btn-add-item" onclick="addAchievement()"><i class="fas fa-plus"></i> Add
+                                Achievement</button>
+
+                            <h3 class="sub-section-title" style="margin-top: 40px;"><i
+                                    class="fas fa-certificate text-primary"></i> Certifications</h3>
+                            <div id="certificationsContainer"></div>
+                            <button class="btn-add-item" onclick="addCertification()"><i class="fas fa-plus"></i> Add
+                                Certification</button>
+
+                            <h3 class="sub-section-title" style="margin-top: 40px;"><i
+                                    class="fas fa-language text-primary"></i> Languages</h3>
+                            <div id="languagesContainer"></div>
+                            <button class="btn-add-item" onclick="addLanguage()"><i class="fas fa-plus"></i> Add
+                                Language</button>
+                        </div>
+
+                        <div class="form-section" id="step6">
+                            <h2 class="section-title"><i class="fas fa-rocket text-primary"></i> ATS Analysis & Export
+                            </h2>
+                            <p class="section-desc">Review your resume strength before generating the final PDF.</p>
+
+                            <div class="analytics-grid">
+                                <div class="analytics-card">
+                                    <svg viewBox="0 0 36 36" class="circular-chart">
+                                        <path class="circular-bg"
+                                            d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                                        <path class="circular-path" stroke="#10B981" stroke-dasharray="92, 100"
+                                            d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                                        <text x="18" y="20.35" class="circular-text" text-anchor="middle">92%</text>
+                                    </svg>
+                                    <div style="color: white; font-weight: 600; font-size: 0.9rem;">ATS Layout</div>
+                                </div>
+                                <div class="analytics-card">
+                                    <svg viewBox="0 0 36 36" class="circular-chart">
+                                        <path class="circular-bg"
+                                            d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                                        <path class="circular-path" stroke="#38BDF8" stroke-dasharray="85, 100"
+                                            d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                                        <text x="18" y="20.35" class="circular-text" text-anchor="middle">85%</text>
+                                    </svg>
+                                    <div style="color: white; font-weight: 600; font-size: 0.9rem;">Impact Verbs</div>
+                                </div>
+                                <div class="analytics-card">
+                                    <svg viewBox="0 0 36 36" class="circular-chart">
+                                        <path class="circular-bg"
+                                            d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                                        <path class="circular-path" stroke="#8B5CF6" id="jdScorePath"
+                                            stroke-dasharray="0, 100"
+                                            d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                                        <text x="18" y="20.35" class="circular-text" id="jdScoreText"
+                                            text-anchor="middle">--</text>
+                                    </svg>
+                                    <div style="color: white; font-weight: 600; font-size: 0.9rem;">JD Match</div>
+                                </div>
+                            </div>
+
+                            <div style="background: rgba(0,0,0,0.3); border-radius: 8px; padding: 20px;">
+                                <h4 style="color: white; margin: 0 0 10px 0;"><i
+                                        class="fas fa-lightbulb text-primary"></i> AI Recommendations</h4>
+                                <ul
+                                    style="color: var(--text-muted); font-size: 0.9rem; margin: 0; padding-left: 20px; line-height: 1.6;">
+                                    <li>Your formatting is completely ATS parseable (Single Column).</li>
+                                    <li>If targeting enterprise roles, switch to the <strong>Minimal ATS</strong> theme.
+                                    </li>
+                                    <li id="jdRecText">Paste a Job Description in Step 2 to get missing keyword
+                                        suggestions.</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="builder-footer">
+                        <button class="btn-nav" id="btnPrev" disabled onclick="navigate(-1)">Back</button>
+                        <div>
+                            <button class="btn-skip" id="btnSkip" onclick="navigate(1)">Skip Step</button>
+                            <button class="btn-primary-glow" id="btnNext" onclick="navigate(1)">Next Step <i
+                                    class="fas fa-arrow-right"></i></button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="preview-panel">
+                    <div class="preview-toolbar">
+                        <div class="theme-selector">
+                            <button class="theme-btn active" onclick="switchTheme('theme-minimal', this)">Minimal
+                                ATS</button>
+                            <button class="theme-btn" onclick="switchTheme('theme-modern', this)">Modern</button>
+                            <button class="theme-btn" onclick="switchTheme('theme-tech', this)">Tech / AI</button>
+                        </div>
+                        <button class="btn-primary-glow" onclick="downloadPDF()"
+                            style="padding: 8px 16px; font-size: 0.85rem;">
+                            <i class="fas fa-file-download"></i> Export PDF
+                        </button>
+                    </div>
+
+                    <div class="preview-scroll-area">
+                        <div class="resume-page theme-minimal" id="resume-document">
+
+                            <div class="res-header">
+                                <h1 class="res-name" id="p-name">Your Name</h1>
+                                <div class="res-contact">
+                                    <span id="p-phone"></span>
+                                    <span id="p-email"></span>
+                                    <span id="p-linkedin-wrap" style="display:none;"> | <span
+                                            id="p-linkedin"></span></span>
+                                    <span id="p-github-wrap" style="display:none;"> | <span id="p-github"></span></span>
+                                </div>
+                            </div>
+
+                            <div class="res-section" id="p-summary-section" style="display:none;">
+                                <div class="res-section-title">Professional Summary</div>
+                                <div class="res-text" id="p-summary"></div>
+                            </div>
+
+                            <div class="res-section" id="p-skills-section" style="display:none;">
+                                <div class="res-section-title">Technical Skills</div>
+                                <div class="res-text" id="p-skills-container"></div>
+                            </div>
+
+                            <div class="res-section" id="p-exp-section" style="display:none;">
+                                <div class="res-section-title">Experience</div>
+                                <div id="p-exp-container"></div>
+                                <div id="p-intern-container"></div>
+                            </div>
+
+                            <div class="res-section" id="p-proj-section" style="display:none;">
+                                <div class="res-section-title">Projects</div>
+                                <div id="p-proj-container"></div>
+                            </div>
+
+                            <div class="res-section" id="p-achieve-section" style="display:none;">
+                                <div class="res-section-title">Key Achievements</div>
+                                <ul class="res-bullets" id="p-achieve-container" style="margin-top: 5px;"></ul>
+                            </div>
+
+                            <div class="res-section" id="p-cert-section" style="display:none;">
+                                <div class="res-section-title">Certifications</div>
+                                <div id="p-cert-container"></div>
+                            </div>
+
+                            <div class="res-section" id="p-edu-section" style="display:none;">
+                                <div class="res-section-title">Education</div>
+                                <div id="p-edu-container"></div>
+                            </div>
+
+                            <div class="res-section" id="p-lang-section" style="display:none;">
+                                <div class="res-section-title">Languages</div>
+                                <div class="res-inline-list" id="p-lang-container"></div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const userData = JSON.parse(localStorage.getItem('userData') || '{}');
+            const userNameText = document.getElementById('userNameText');
+
+            const toggleBtn = document.getElementById("themeToggle");
+
+toggleBtn.addEventListener("click", () => {
+    document.body.classList.toggle("light-mode");
+
+    const icon = toggleBtn.querySelector("i");
+
+    if (document.body.classList.contains("light-mode")) {
+        icon.className = "fas fa-sun";
+        localStorage.setItem("theme", "light");
+    } else {
+        icon.className = "fas fa-moon";
+        localStorage.setItem("theme", "dark");
+    }
+});
+
+if (localStorage.getItem("theme") === "light") {
+    document.body.classList.add("light-mode");
+    toggleBtn.querySelector("i").className = "fas fa-sun";
+}
+            if (userNameText) userNameText.innerText = userData.name || "Guest";
+
+            // --- WIZARD NAVIGATION ---
+            let currentStep = 1;
+            const totalSteps = 6;
+            const btnPrev = document.getElementById('btnPrev');
+            const btnNext = document.getElementById('btnNext');
+            const btnSkip = document.getElementById('btnSkip');
+            const dots = document.querySelectorAll('.step-dot');
+
+            window.jumpToStep = function (step) {
+                if (step === currentStep) return;
+                let dir = step - currentStep;
+                navigate(dir, true, step);
+            };
+
+            window.navigate = function (direction, isJump = false, exactStep = null) {
+                document.getElementById(`step${currentStep}`).classList.remove('active');
+
+                if (!isJump) {
+                    if (currentStep <= totalSteps && direction > 0) dots[currentStep - 1].classList.add('completed');
+                    currentStep += direction;
+                } else {
+                    currentStep = exactStep;
+                }
+
+                document.getElementById(`step${currentStep}`).classList.add('active');
+
+                for (let i = 0; i < totalSteps; i++) {
+                    if (i < currentStep - 1) {
+                        dots[i].classList.add('completed');
+                        dots[i].classList.remove('active');
+                        dots[i].innerHTML = '<i class="fas fa-check"></i>';
+                    } else if (i === currentStep - 1) {
+                        dots[i].classList.add('active');
+                        dots[i].classList.remove('completed');
+                        dots[i].innerHTML = i === 5 ? '<i class="fas fa-rocket"></i>' : i + 1;
+                    } else {
+                        dots[i].classList.remove('active', 'completed');
+                        dots[i].innerHTML = i === 5 ? '<i class="fas fa-rocket"></i>' : i + 1;
+                    }
+                }
+
+                btnPrev.disabled = currentStep === 1;
+
+                if (currentStep === totalSteps) {
+                    btnNext.style.display = 'none';
+                    btnSkip.style.display = 'none';
+                } else {
+                    btnNext.style.display = 'inline-flex';
+                    btnSkip.style.display = 'inline-flex';
+                }
+
+                if (currentStep === 6) calculateJDMatch();
+            };
+
+            // --- THEME SWITCHER ---
+            window.switchTheme = function (themeClass, btn) {
+                document.querySelectorAll('.theme-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                const doc = document.getElementById('resume-document');
+                doc.className = 'resume-page ' + themeClass;
+            };
+
+            // --- REAL-TIME DATA BINDING & PARSING ---
+            document.getElementById('formContainer').addEventListener('input', (e) => {
+                if (e.target.classList.contains('r-trigger')) triggerRender();
+            });
+
+            window.triggerRender = function () {
+                // 1. Basic Info
+                document.getElementById('p-name').innerText = document.getElementById('f-name').value || 'Your Name';
+                document.getElementById('p-email').innerText = document.getElementById('f-email').value;
+                document.getElementById('p-phone').innerText = document.getElementById('f-phone').value;
+
+                const phone = document.getElementById('f-phone').value;
+                const email = document.getElementById('f-email').value;
+                if (phone && email) document.getElementById('p-phone').innerText += " | ";
+
+                const link = document.getElementById('f-linkedin').value;
+                const git = document.getElementById('f-github').value;
+                document.getElementById('p-linkedin-wrap').style.display = link ? 'inline' : 'none';
+                document.getElementById('p-linkedin').innerText = link;
+
+                document.getElementById('p-github-wrap').style.display = git ? 'inline' : 'none';
+                document.getElementById('p-github').innerText = git ? (link ? " | " + git : git) : "";
+
+                // 2. Summary
+                const summary = document.getElementById('f-summary').value;
+                document.getElementById('p-summary-section').style.display = summary ? 'block' : 'none';
+                document.getElementById('p-summary').innerText = summary;
+
+                // 3. Skills (Smart Categorization)
+                const skillsRaw = document.getElementById('f-skills').value;
+                const skillsSection = document.getElementById('p-skills-section');
+                const skillsContainer = document.getElementById('p-skills-container');
+
+                if (skillsRaw) {
+                    skillsSection.style.display = 'block';
+                    const skillsArray = skillsRaw.split(',').map(s => s.trim()).filter(s => s);
+
+                    let lang = [], frame = [], tool = [], other = [];
+                    const knownLangs = ['python', 'javascript', 'java', 'c++', 'sql', 'typescript', 'html', 'css', 'ruby', 'go'];
+                    const knownFrames = ['react', 'node.js', 'django', 'fastapi', 'angular', 'vue', 'express', 'spring', 'pytorch', 'tensorflow'];
+                    const knownTools = ['git', 'docker', 'aws', 'kubernetes', 'linux', 'jira', 'azure', 'gcp'];
+
+                    skillsArray.forEach(s => {
+                        const low = s.toLowerCase();
+                        if (knownLangs.some(l => low.includes(l))) lang.push(s);
+                        else if (knownFrames.some(f => low.includes(f))) frame.push(s);
+                        else if (knownTools.some(t => low.includes(t))) tool.push(s);
+                        else other.push(s);
+                    });
+
+                    let skillHtml = "";
+                    if (lang.length) skillHtml += `<div><span class="skill-category">Languages:</span> ${lang.join(', ')}</div>`;
+                    if (frame.length) skillHtml += `<div><span class="skill-category">Frameworks & Libraries:</span> ${frame.join(', ')}</div>`;
+                    if (tool.length) skillHtml += `<div><span class="skill-category">Tools & Cloud:</span> ${tool.join(', ')}</div>`;
+                    if (other.length) skillHtml += `<div><span class="skill-category">Other:</span> ${other.join(', ')}</div>`;
+
+                    if (!skillHtml) skillHtml = skillsRaw;
+                    skillsContainer.innerHTML = skillHtml;
+                } else {
+                    skillsSection.style.display = 'none';
+                }
+
+                // Helper for rendering Item Blocks (Experience, Internships, Projects, Certs)
+                function renderBlocks(containerId, previewId, isProject = false, isCert = false) {
+                    const container = document.getElementById(previewId);
+                    const items = document.querySelectorAll(`#${containerId} .dynamic-item`);
+                    let html = "";
+
+                    items.forEach(item => {
+                        const titleObj = item.querySelector('.f-exp-title, .f-proj-title, .f-cert-title');
+                        const compObj = item.querySelector('.f-exp-comp, .f-proj-tech, .f-cert-issuer');
+                        const dateObj = item.querySelector('.f-exp-date, .f-cert-date');
+                        const descObj = item.querySelector('.f-exp-desc, .f-proj-desc');
+
+                        const title = titleObj ? titleObj.value : "";
+                        const comp = compObj ? compObj.value : "";
+                        const date = dateObj ? dateObj.value : "";
+                        const desc = descObj ? descObj.value : "";
+
+                        if (title || comp || desc || date) {
+                            let bulletsHtml = "";
+                            if (desc) {
+                                bulletsHtml = desc.split('\n').filter(l => l.trim() !== '').map(l => `<li>${l.replace(/^-/, '').trim()}</li>`).join('');
+                            }
+
+                            html += `<div class="res-item"><div class="res-item-header">`;
+
+                            if (isProject) {
+                                html += `<div class="res-item-title">${title} ${comp ? `<span style="font-weight:400; color:#555;">| <i>${comp}</i></span>` : ''}</div>`;
+                            } else if (isCert) {
+                                html += `<div class="res-item-title">${title}</div><div class="res-item-date">${date}</div></div><div class="res-item-subtitle">${comp}</div></div>`;
+                                return; // Certs usually don't have bullets in ATS
+                            } else {
+                                html += `<div class="res-item-title">${title}</div><div class="res-item-date">${date}</div></div><div class="res-item-subtitle">${comp}</div>`;
+                            }
+
+                            if (!isCert) {
+                                html += `</div><ul class="res-bullets">${bulletsHtml}</ul></div>`;
+                            }
+                        }
+                    });
+                    container.innerHTML = html;
+                    return html !== "";
+                }
+
+                // 4. Experience & Internships
+                const hasExp = renderBlocks('experienceContainer', 'p-exp-container');
+                const hasIntern = renderBlocks('internshipContainer', 'p-intern-container');
+                document.getElementById('p-exp-section').style.display = (hasExp || hasIntern) ? 'block' : 'none';
+
+                // 5. Projects
+                const hasProj = renderBlocks('projectsContainer', 'p-proj-container', true);
+                document.getElementById('p-proj-section').style.display = hasProj ? 'block' : 'none';
+
+                // 5b. Certifications
+                const hasCert = renderBlocks('certificationsContainer', 'p-cert-container', false, true);
+                document.getElementById('p-cert-section').style.display = hasCert ? 'block' : 'none';
+
+                // 5c. Achievements
+                const achieveContainer = document.getElementById('p-achieve-container');
+                const achieveItems = document.querySelectorAll('#achievementsContainer .f-achieve-desc');
+                let achieveHtml = "";
+                achieveItems.forEach(item => {
+                    if (item.value.trim()) achieveHtml += `<li>${item.value.trim()}</li>`;
+                });
+                achieveContainer.innerHTML = achieveHtml;
+                document.getElementById('p-achieve-section').style.display = achieveHtml ? 'block' : 'none';
+
+                // 5d. Languages
+                const langContainer = document.getElementById('p-lang-container');
+                const langItems = document.querySelectorAll('#languagesContainer .dynamic-item');
+                let langHtml = "";
+                langItems.forEach(item => {
+                    const lang = item.querySelector('.f-lang-name').value;
+                    const prof = item.querySelector('.f-lang-prof').value;
+                    if (lang) langHtml += `<span><strong>${lang}</strong> (${prof})</span>`;
+                });
+                langContainer.innerHTML = langHtml;
+                document.getElementById('p-lang-section').style.display = langHtml ? 'block' : 'none';
+
+                // 6. Education
+                const eduContainer = document.getElementById('p-edu-container');
+                const eduItems = document.querySelectorAll('#educationContainer .dynamic-item');
+                let eduHtml = "";
+                eduItems.forEach(item => {
+                    const deg = item.querySelector('.f-edu-deg').value;
+                    const uni = item.querySelector('.f-edu-uni').value;
+                    const date = item.querySelector('.f-edu-date').value;
+                    const gpa = item.querySelector('.f-edu-gpa').value;
+
+                    if (deg || uni) {
+                        eduHtml += `
+                            <div class="res-item">
+                                <div class="res-item-header">
+                                    <div class="res-item-title">${deg} ${gpa ? `<span style="font-weight:400; font-size:0.9em; color:#555;">(GPA: ${gpa})</span>` : ''}</div>
+                                    <div class="res-item-date">${date}</div>
+                                </div>
+                                <div class="res-item-subtitle">${uni}</div>
+                            </div>`;
+                    }
+                });
+                document.getElementById('p-edu-section').style.display = eduHtml ? 'block' : 'none';
+                eduContainer.innerHTML = eduHtml;
+            };
+
+            // --- DYNAMIC FIELDS BUILDERS ---
+            window.addExperience = function (containerId) {
+                const titlePlaceholder = containerId === 'internshipContainer' ? 'e.g. Software Engineering Intern' : 'e.g. Senior Software Engineer';
+                const html = `
+                    <div class="dynamic-item">
+                        <button class="btn-remove-item" onclick="this.parentElement.remove(); triggerRender();"><i class="fas fa-trash"></i></button>
+                        <div class="form-row">
+                            <div class="form-group"><label class="form-label">Title</label><input type="text" class="form-input r-trigger f-exp-title" placeholder="${titlePlaceholder}"></div>
+                            <div class="form-group"><label class="form-label">Company</label><input type="text" class="form-input r-trigger f-exp-comp" placeholder="e.g. Google"></div>
+                        </div>
+                        <div class="form-row"><div class="form-group"><label class="form-label">Dates & Location</label><input type="text" class="form-input r-trigger f-exp-date" placeholder="e.g. Summer 2023 | NY"></div></div>
+                        <div class="form-group" style="margin-bottom:0;">
+                            <label class="form-label">Impact & Achievements</label>
+                            <button class="btn-ai-magic" onclick="enhanceBullets(this)" style="top:25px;"><i class="fas fa-magic"></i> AI Fix</button>
+                            <textarea class="form-input r-trigger f-exp-desc" placeholder="- Developed REST APIs..."></textarea>
+                        </div>
+                    </div>`;
+                document.getElementById(containerId).insertAdjacentHTML('beforeend', html);
+            };
+
+            window.addProject = function () {
+                const html = `
+                    <div class="dynamic-item">
+                        <button class="btn-remove-item" onclick="this.parentElement.remove(); triggerRender();"><i class="fas fa-trash"></i></button>
+                        <div class="form-row">
+                            <div class="form-group"><label class="form-label">Project Name</label><input type="text" class="form-input r-trigger f-proj-title" placeholder="e.g. E-Commerce Platform"></div>
+                            <div class="form-group"><label class="form-label">Tech Stack</label><input type="text" class="form-input r-trigger f-proj-tech" placeholder="e.g. React, Node.js"></div>
+                        </div>
+                        <div class="form-group" style="margin-bottom:0;">
+                            <label class="form-label">Description</label>
+                            <textarea class="form-input r-trigger f-proj-desc" placeholder="- Built a platform that..." style="min-height: 80px;"></textarea>
+                        </div>
+                    </div>`;
+                document.getElementById('projectsContainer').insertAdjacentHTML('beforeend', html);
+            };
+
+            window.addEducation = function () {
+                const html = `
+                    <div class="dynamic-item">
+                        <button class="btn-remove-item" onclick="this.parentElement.remove(); triggerRender();"><i class="fas fa-trash"></i></button>
+                        <div class="form-row">
+                            <div class="form-group"><label class="form-label">Degree & Major</label><input type="text" class="form-input r-trigger f-edu-deg" placeholder="e.g. BS in Computer Science"></div>
+                            <div class="form-group"><label class="form-label">University</label><input type="text" class="form-input r-trigger f-edu-uni" placeholder="e.g. Stanford"></div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group"><label class="form-label">Dates</label><input type="text" class="form-input r-trigger f-edu-date" placeholder="e.g. 2020 - 2024"></div>
+                            <div class="form-group"><label class="form-label">GPA / Honors (Optional)</label><input type="text" class="form-input r-trigger f-edu-gpa" placeholder="e.g. 3.8/4.0"></div>
+                        </div>
+                    </div>`;
+                document.getElementById('educationContainer').insertAdjacentHTML('beforeend', html);
+            };
+
+            window.addCertification = function () {
+                const html = `
+                    <div class="dynamic-item" style="padding: 15px 20px;">
+                        <button class="btn-remove-item" style="top: 10px; right: 10px;" onclick="this.parentElement.remove(); triggerRender();"><i class="fas fa-trash"></i></button>
+                        <div class="form-row-3">
+                            <div class="form-group" style="margin:0;"><label class="form-label">Cert Name</label><input type="text" class="form-input r-trigger f-cert-title" placeholder="e.g. AWS Solutions Architect"></div>
+                            <div class="form-group" style="margin:0;"><label class="form-label">Issuer</label><input type="text" class="form-input r-trigger f-cert-issuer" placeholder="e.g. Amazon"></div>
+                            <div class="form-group" style="margin:0;"><label class="form-label">Year</label><input type="text" class="form-input r-trigger f-cert-date" placeholder="e.g. 2023"></div>
+                        </div>
+                    </div>`;
+                document.getElementById('certificationsContainer').insertAdjacentHTML('beforeend', html);
+            };
+
+            window.addAchievement = function () {
+                const html = `
+                    <div class="dynamic-item" style="padding: 15px 20px;">
+                        <button class="btn-remove-item" style="top: 10px; right: 10px;" onclick="this.parentElement.remove(); triggerRender();"><i class="fas fa-trash"></i></button>
+                        <div class="form-group" style="margin:0;"><input type="text" class="form-input r-trigger f-achieve-desc" placeholder="e.g. 1st Place at Global Hackathon 2023 out of 500+ teams"></div>
+                    </div>`;
+                document.getElementById('achievementsContainer').insertAdjacentHTML('beforeend', html);
+            };
+
+            window.addLanguage = function () {
+                const html = `
+                    <div class="dynamic-item" style="padding: 15px 20px;">
+                        <button class="btn-remove-item" style="top: 10px; right: 10px;" onclick="this.parentElement.remove(); triggerRender();"><i class="fas fa-trash"></i></button>
+                        <div class="form-row">
+                            <div class="form-group" style="margin:0;"><label class="form-label">Language</label><input type="text" class="form-input r-trigger f-lang-name" placeholder="e.g. English"></div>
+                            <div class="form-group" style="margin:0;">
+                                <label class="form-label">Proficiency</label>
+                                <select class="form-select r-trigger f-lang-prof">
+                                    <option value="Native">Native / Bilingual</option>
+                                    <option value="Fluent">Fluent</option>
+                                    <option value="Intermediate">Intermediate</option>
+                                    <option value="Basic">Basic</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>`;
+                document.getElementById('languagesContainer').insertAdjacentHTML('beforeend', html);
+            };
+
+            // --- SIMULATED AI FEATURES ---
+            window.enhanceSummary = function () {
+                const el = document.getElementById('f-summary');
+                const jd = document.getElementById('f-jd').value;
+                const btn = event.currentTarget;
+                btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Tailoring...';
+                setTimeout(() => {
+                    if (jd && jd.toLowerCase().includes('backend')) {
+                        el.value = "Results-driven Backend Engineer with expertise in scalable API development, cloud-native systems, and data optimization. Proven track record of automating workflows and building production-ready architectural solutions tailored to enterprise requirements.";
+                    } else {
+                        el.value = "Results-driven Software Engineer specializing in modern full-stack development. Proven track record of developing end-to-end architectures, optimizing database performance, and driving scalable operational efficiency.";
+                    }
+                    btn.innerHTML = '<i class="fas fa-check"></i> Tailored';
+                    btn.style.color = '#34D399';
+                    triggerRender();
+                }, 1000);
+            };
+
+            window.suggestSkills = function () {
+                const el = document.getElementById('f-skills');
+                const btn = event.currentTarget;
+                btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Optimizing...';
+                setTimeout(() => {
+                    let currentSkills = el.value.split(',').map(s => s.trim()).filter(s => s !== "");
+                    let recommendedSkills = ["Python", "JavaScript", "React", "Node.js", "PostgreSQL", "Docker", "AWS", "Git", "CI/CD"];
+                    let uniqueSkills = [...new Set([...currentSkills, ...recommendedSkills])];
+                    el.value = uniqueSkills.join(', ');
+                    btn.innerHTML = '<i class="fas fa-check"></i> Categorized';
+                    btn.style.color = '#34D399';
+                    triggerRender();
+                }, 1000);
+            };
+
+            window.enhanceBullets = function (btn) {
+                const textarea = btn.nextElementSibling;
+                btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+                setTimeout(() => {
+                    textarea.value = "- Architected scalable microservices using modern backend frameworks, handling over 50K+ monthly requests.\n- Optimized complex database schemas, reducing API response times by 40%.\n- Automated deployment CI/CD pipelines, increasing team deployment velocity by 65%.";
+                    btn.innerHTML = '<i class="fas fa-check"></i>';
+                    btn.style.color = '#34D399';
+                    triggerRender();
+                }, 1200);
+            };
+
+            window.calculateJDMatch = function () {
+                const jd = document.getElementById('f-jd').value;
+                const scoreText = document.getElementById('jdScoreText');
+                const scorePath = document.getElementById('jdScorePath');
+                const recText = document.getElementById('jdRecText');
+
+                if (!jd) {
+                    scoreText.innerHTML = "--";
+                    scorePath.setAttribute('stroke-dasharray', '0, 100');
+                    recText.innerHTML = "Paste a Job Description in Step 2 to get missing keyword suggestions.";
+                    return;
+                }
+
+                const randomScore = Math.floor(Math.random() * 15 + 80);
+                scoreText.innerHTML = `${randomScore}%`;
+                scorePath.setAttribute('stroke-dasharray', `${randomScore}, 100`);
+                recText.innerHTML = `Your resume matches ${randomScore}% of the JD requirements. Consider adding keywords like <strong>Agile</strong> or <strong>REST APIs</strong> to boost it further.`;
+            };
+
+            // --- PDF GENERATION ---
+            window.downloadPDF = function () {
+                const element = document.getElementById('resume-document');
+                element.style.transform = 'none';
+
+                const opt = {
+                    margin: 0,
+                    filename: 'IntelliPath_ATS_Resume.pdf',
+                    image: { type: 'jpeg', quality: 1 },
+                    html2canvas: { scale: 2, useCORS: true },
+                    jsPDF: { unit: 'px', format: [794, 1123], orientation: 'portrait' }
+                };
+
+                html2pdf().set(opt).from(element).save().then(() => {
+                    element.style.transform = 'scale(0.85)';
+                });
+            };
+
+            triggerRender();
+
+            const logoutBtn = document.getElementById('logoutBtn');
+            if (logoutBtn) {
+                logoutBtn.addEventListener('click', () => {
+                    localStorage.removeItem('userData');
+                    window.location.href = 'index.html';
+                });
+            }
+        });
+    </script>
+</body>
+
+</html>

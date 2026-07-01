@@ -1,0 +1,787 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resume Analyzer - IntelliPath</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/dashboard.css">
+    <link rel="stylesheet" href="css/resume.css">
+
+    <style>
+        /* --- LAYOUT FIXES & CLEAN TOPBAR --- */
+
+        :root {
+    --bg-main: #081228;
+    --bg-sidebar: #0b1020;
+    --bg-card: #111827;
+    --text-main: #ffffff;
+    --text-secondary: #9ca3af;
+    --border: #26324a;
+}
+
+body.light-mode {
+    --bg-main: #f5f7fb;
+    --bg-sidebar: #ffffff;
+    --bg-card: #ffffff;
+    --text-main: #111827;
+    --text-secondary: #6b7280;
+    --border: #e5e7eb;
+}
+
+body {
+    background: var(--bg-main);
+    color: var(--text-main);
+}
+
+.sidebar {
+    background: var(--bg-sidebar);
+}
+
+.topbar,
+.header {
+    background: var(--bg-sidebar);
+}
+
+.main-content,
+.dashboard-content,
+.dashboard-container {
+    background: var(--bg-main);
+}
+
+.stat-card,
+.career-card,
+.quick-actions,
+.action-card,
+.feature-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+}
+
+h1, h2, h3, h4, h5 {
+    color: var(--text-main);
+}
+
+p,
+span,
+label {
+    color: var(--text-secondary);
+}
+        html,
+        body.modern-dark-body {
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            overflow: hidden;
+            background: #0F172A;
+        }
+
+        .dashboard-layout {
+            height: 100vh;
+            display: flex;
+            overflow: hidden;
+        }
+
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .topbar {
+            flex-shrink: 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 30px;
+            border-bottom: 1px solid var(--glass-border);
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(12px);
+            z-index: 20;
+        }
+
+        .topbar-left {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .topbar-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: white;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .topbar-actions {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 15px;
+        }
+
+        .content-wrapper {
+            flex: 1;
+            overflow-y: auto;
+            position: relative;
+            z-index: 10;
+            width: 100%;
+            padding: 40px;
+            box-sizing: border-box;
+            scroll-behavior: smooth;
+        }
+
+        .content-wrapper::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .content-wrapper::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.1);
+        }
+
+        .content-wrapper::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+        }
+
+        /* --- MODAL / POPUP STYLES --- */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(15, 23, 42, 0.85);
+            backdrop-filter: blur(8px);
+            z-index: 1000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            animation: fadeIn 0.3s forwards;
+        }
+
+        .modal-content {
+            width: 90%;
+            max-width: 750px;
+            max-height: 85vh;
+            background: var(--bg-darker);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            display: flex;
+            flex-direction: column;
+            transform: translateY(20px);
+            animation: slideUpModal 0.3s forwards;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 25px;
+            border-bottom: 1px solid var(--glass-border);
+        }
+
+        .modal-header h2 {
+            font-size: 1.25rem;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--text-primary);
+        }
+
+        .close-modal-btn {
+            background: rgba(255, 255, 255, 0.05);
+            border: none;
+            color: var(--text-muted);
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: 0.3s;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .close-modal-btn:hover {
+            background: rgba(239, 68, 68, 0.2);
+            color: #EF4444;
+        }
+
+        .modal-body {
+            padding: 25px;
+            overflow-y: auto;
+            color: var(--text-muted);
+            line-height: 1.6;
+        }
+
+        /* Custom Scrollbar for Modal */
+        .modal-body::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .modal-body::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.1);
+            border-radius: 4px;
+        }
+
+        .modal-body::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+        }
+        .theme-toggle {
+    width: 45px;
+    height: 45px;
+    border: none;
+    border-radius: 50%;
+    background: rgba(99, 102, 241, 0.15);
+    color: #6366f1;
+    cursor: pointer;
+    margin-right: 15px;
+    transition: all 0.3s ease;
+}
+
+.theme-toggle:hover {
+    transform: scale(1.05);
+}
+
+.light-mode {
+    background: #f5f7fb;
+    color: #111827;
+}
+
+.light-mode .sidebar,
+.light-mode .dashboard-card,
+.light-mode .career-path-card,
+.light-mode .quick-actions {
+    background: #ffffff;
+    color: #111827;
+    border: 1px solid #e5e7eb;
+}
+
+.light-mode .navbar {
+    background: #ffffff;
+}
+
+.light-mode .stat-card {
+    background: #ffffff;
+}
+
+
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideUpModal {
+            to {
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+
+<body class="modern-dark-body">
+    <div class="ambient-blob blob-1"></div>
+    <div class="ambient-blob blob-2"></div>
+
+    <div class="dashboard-layout">
+
+        <nav class="sidebar modern-glass-sidebar" id="appSidebar">
+            <div class="sidebar-header">
+                <div class="logo-icon"><i class="fas fa-layer-group"></i></div>
+                <h2 onclick="window.location.href='index.html'">Intelli<span>Path</span></h2>
+            </div>
+            <ul class="nav-links">
+                <li onclick="window.location.href='dashboard.html'"><i class="fas fa-home"></i> Dashboard</li>
+                <li onclick="window.location.href='resume-creator.html'"><i class="fas fa-file-medical"></i> Resume
+                    Builder</li>
+                <li class="active" onclick="window.location.href='resume-builder.html'"><i
+                        class="fas fa-file-contract"></i> Resume Analyzer</li>
+                <li onclick="window.location.href='interview.html'"><i class="fas fa-microphone-alt"></i> AI Interview
+                </li>
+                <li onclick="window.location.href='assessment.html'"><i class="fas fa-chart-pie"></i> Skill Gap</li>
+                <li onclick="window.location.href='roadmap.html'"><i class="fas fa-map-signs"></i> Roadmap</li>
+                <li onclick="window.location.href='jobs.html'"><i class="fas fa-chart-line"></i> Find Jobs</li>
+                <li onclick="window.location.href='ai-assistant.html'"><i class="fas fa-robot"></i> AI Assistant</li>
+                <li onclick="window.location.href='settings.html'"><i class="fas fa-cog"></i> Settings</li>
+            </ul>
+            <ul class="nav-links sidebar-footer">
+                <li id="logoutBtn" class="logout-item"><i class="fas fa-sign-out-alt"></i> Logout</li>
+            </ul>
+        </nav>
+
+        <main class="main-content">
+
+            <header class="topbar">
+                <div class="topbar-left">
+                    <h1 class="topbar-title">IntelliPath <span style="color: var(--primary-glow);">Analyzer</span></h1>
+                </div>
+                  <button id="themeToggle" class="theme-toggle">
+    <i class="fas fa-moon"></i>
+</button>
+                <div class="topbar-actions">
+                    <div id="userProfileDisplay" class="modern-profile-pill" onclick="window.location.href='/settings.html'" style="cursor: pointer;">
+    <div class="avatar"><i class="fas fa-user"></i></div>
+    <span id="userNameText">Loading...</span>
+</div>
+                </div>
+            </header>
+
+            <div class="content-wrapper resume-wrapper">
+
+                <div class="page-header animate-slide-up">
+                    <div class="header-icon purple-glow"><i class="fas fa-file-signature"></i></div>
+                    <div>
+                        <h1 class="greeting">AI Resume <span class="gradient-text">Analyzer</span></h1>
+                        <p class="subtitle">Optimize your resume for ATS algorithms and align it perfectly with your
+                            dream job.</p>
+                    </div>
+                </div>
+
+                <div class="resume-grid">
+                    <div class="modern-glass-card form-card animate-slide-up" style="animation-delay: 0.1s;">
+                        <div class="card-header-flex">
+                            <h3><i class="fas fa-upload text-primary"></i> Upload & Match</h3>
+                            <span class="ai-badge"><i class="fas fa-bolt"></i> AI Powered</span>
+                        </div>
+
+                        <form id="resumeForm" class="resume-form">
+                            <div class="form-group">
+                                <label>1. Upload Resume (PDF/DOCX)</label>
+                                <div class="dropzone" id="dropzone"
+                                    onclick="document.getElementById('resumeFile').click()">
+                                    <input type="file" id="resumeFile" name="resume" style="display: none;"
+                                        accept=".pdf,.doc,.docx" required>
+                                    <div class="dropzone-icon"><i class="fas fa-cloud-upload-alt"></i></div>
+                                    <p class="dropzone-text">Drag & drop your resume here, or <span
+                                            class="text-primary">browse</span></p>
+                                    <p id="fileNameDisplay" class="file-name-display muted">Supported: PDF, DOCX up to
+                                        5MB</p>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label style="display: flex; justify-content: space-between;">
+                                    <span>2. Target Job Description</span>
+                                    <span class="ai-helper"><i class="fas fa-magic"></i> Auto-extract keywords</span>
+                                </label>
+                                <textarea id="jobDescription" name="job_desc" class="modern-textarea"
+                                    placeholder="Paste the exact job description you are applying for here..." rows="6"
+                                    required></textarea>
+                            </div>
+
+                            <button type="submit" id="analyzeBtn" class="btn-primary-glow mt-4">
+                                <span class="btn-text"><i class="fas fa-microchip"></i> Analyze Resume</span>
+                                <div class="btn-loader" style="display: none;"><i
+                                        class="fas fa-circle-notch fa-spin"></i> Scanning with AI...</div>
+                            </button>
+                        </form>
+                    </div>
+
+                    <div class="results-column">
+                        <div class="stats-row animate-slide-up" style="animation-delay: 0.2s;">
+                            <div class="modern-glass-card ats-score-card">
+                                <h3>ATS Match Score</h3>
+                                <div class="circular-progress" data-score="0" id="atsScoreCircle">
+                                    <div class="inner-circle">
+                                        <span id="atsScoreText" class="score-value">--%</span>
+                                    </div>
+                                    <svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="120px" height="120px">
+                                        <defs>
+                                            <linearGradient id="GradientColor">
+                                                <stop offset="0%" stop-color="#4F46E5" />
+                                                <stop offset="100%" stop-color="#10B981" />
+                                            </linearGradient>
+                                        </defs>
+                                        <circle cx="60" cy="60" r="50" stroke-linecap="round" id="progressRing" />
+                                    </svg>
+                                </div>
+                                <p class="score-label" id="atsScoreLabel">Awaiting Upload</p>
+                            </div>
+
+                            <div class="quick-stats-grid">
+                                <div class="modern-glass-card mini-stat">
+                                    <i class="fas fa-search-dollar text-primary"></i>
+                                    <div>
+                                        <p class="muted">Keyword Match</p>
+                                        <h4 id="keywordScore">--</h4>
+                                    </div>
+                                </div>
+                                <div class="modern-glass-card mini-stat">
+                                    <i class="fas fa-align-left text-success"></i>
+                                    <div>
+                                        <p class="muted">Readability</p>
+                                        <h4 id="readabilityScore">--</h4>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="modern-glass-card results-card animate-slide-up" style="animation-delay: 0.3s;"
+                            id="resultsContainer">
+                            <div class="empty-state">
+                                <div class="empty-icon"><i class="fas fa-robot"></i></div>
+                                <h3>Ready to Analyze</h3>
+                                <p class="muted">Upload your resume and job description to get AI-powered insights,
+                                    missing keywords, and formatting suggestions.</p>
+                            </div>
+                            <div id="actualResultsOutput" style="display: none; color: var(--text-primary);"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modern-glass-card mt-4 animate-slide-up" style="animation-delay: 0.4s; margin-top: 30px;">
+                    <div class="card-header-flex">
+                        <h3><i class="fas fa-history text-primary"></i> Recent Scans History</h3>
+                    </div>
+                    <div style="overflow-x: auto;">
+                        <table class="modern-table" style="width: 100%; border-collapse: collapse; margin-top: 15px;">
+                            <thead>
+                                <tr
+                                    style="border-bottom: 1px solid var(--glass-border); color: var(--text-muted); font-size: 0.85rem; text-transform: uppercase; text-align: left;">
+                                    <th style="padding: 15px;">Date & Time</th>
+                                    <th style="padding: 15px;">Job Target</th>
+                                    <th style="padding: 15px;">ATS Score</th>
+                                    <th style="padding: 15px;">Keyword Match</th>
+                                    <th style="padding: 15px;">Readability</th>
+                                    <th style="padding: 15px; text-align: right;">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="historyTableBody">
+                                <tr>
+                                    <td colspan="6"
+                                        style="text-align: center; padding: 20px; color: var(--text-muted);"><i
+                                            class="fas fa-spinner fa-spin"></i> Loading history...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <div id="reportModal" class="modal-overlay" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fas fa-file-contract text-primary"></i> Detailed AI Scan Report</h2>
+                <button class="close-modal-btn" onclick="closeReportModal()"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body" id="modalBodyContent">
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Store the history globally so the modal can access it
+        let globalHistoryData = [];
+
+        // Global functions to open/close the modal
+        window.openReportModal = function (index) {
+            const item = globalHistoryData[index];
+            if (!item) return;
+
+            // Parse arrays
+            let missingSkills = [];
+            let aiSuggestions = [];
+            try { missingSkills = JSON.parse(item.missing_skills || '[]'); } catch (e) { }
+            try { aiSuggestions = JSON.parse(item.ai_suggestions || '[]'); } catch (e) { }
+
+            // Build Modal HTML
+            let html = `
+                <div style="margin-bottom: 25px;">
+                    <strong style="color: white; display: block; margin-bottom: 8px;">Target Job Description:</strong>
+                    <div style="white-space: pre-wrap; background: rgba(0,0,0,0.2); padding: 15px; border-radius: 8px; border: 1px solid var(--glass-border); font-size: 0.9rem;">${item.job_target}</div>
+                </div>
+            `;
+
+            if (missingSkills.length > 0) {
+                html += `
+                <div style="margin-bottom: 25px;">
+                    <strong style="color: var(--primary-glow); display: block; margin-bottom: 10px;"><i class="fas fa-exclamation-circle"></i> Missing Keywords/Skills:</strong>
+                    <ul style="padding-left: 20px; background: rgba(79, 70, 229, 0.05); padding: 15px 15px 15px 35px; border-radius: 8px; border: 1px solid rgba(79, 70, 229, 0.1);">
+                `;
+                missingSkills.forEach(skill => html += `<li style="margin-bottom: 6px;">${skill}</li>`);
+                html += `</ul></div>`;
+            }
+
+            if (aiSuggestions.length > 0) {
+                html += `
+                <div style="margin-bottom: 10px;">
+                    <strong style="color: var(--secondary-glow); display: block; margin-bottom: 10px;"><i class="fas fa-lightbulb"></i> AI Actionable Suggestions:</strong>
+                    <ul style="padding-left: 20px; background: rgba(16, 185, 129, 0.05); padding: 15px 15px 15px 35px; border-radius: 8px; border: 1px solid rgba(16, 185, 129, 0.1);">
+                `;
+                aiSuggestions.forEach(sugg => html += `<li style="margin-bottom: 6px;">${sugg}</li>`);
+                html += `</ul></div>`;
+            }
+
+            // Inject and show
+            document.getElementById('modalBodyContent').innerHTML = html;
+            document.getElementById('reportModal').style.display = 'flex';
+
+            // Allow clicking outside the box to close it
+            document.getElementById('reportModal').onclick = function (e) {
+                if (e.target === this) closeReportModal();
+            };
+        };
+
+        window.closeReportModal = function () {
+            document.getElementById('reportModal').style.display = 'none';
+        };
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // --- LOGOUT LOGIC ---
+            const logoutBtn = document.getElementById('logoutBtn');
+            if (logoutBtn) {
+                logoutBtn.addEventListener('click', () => {
+                    localStorage.removeItem('userData');
+                    window.location.href = 'index.html';
+                });
+            }
+
+            const toggleBtn = document.getElementById("themeToggle");
+
+toggleBtn.addEventListener("click", () => {
+    document.body.classList.toggle("light-mode");
+
+    const icon = toggleBtn.querySelector("i");
+
+    if (document.body.classList.contains("light-mode")) {
+        icon.className = "fas fa-sun";
+        localStorage.setItem("theme", "light");
+    } else {
+        icon.className = "fas fa-moon";
+        localStorage.setItem("theme", "dark");
+    }
+});
+
+if (localStorage.getItem("theme") === "light") {
+    document.body.classList.add("light-mode");
+    toggleBtn.querySelector("i").className = "fas fa-sun";
+}
+
+            // 1. Load User Name
+            const userData = JSON.parse(localStorage.getItem('userData') || '{}');
+            const currentUserName = userData.name || "Guest";
+            if (document.getElementById('userNameText')) {
+                document.getElementById('userNameText').innerText = currentUserName;
+            }
+
+            // 2. Load History from PostgreSQL Database
+            async function loadHistory() {
+                try {
+                    const response = await fetch(`http://127.0.0.1:8000/api/resume/history/${currentUserName}`);
+                    if (!response.ok) throw new Error("Failed to load history");
+
+                    globalHistoryData = await response.json();
+                    const tbody = document.getElementById('historyTableBody');
+
+                    if (globalHistoryData.length === 0) {
+                        tbody.innerHTML = `<tr><td colspan="6" style="text-align: center; padding: 20px; color: var(--text-muted);">No recent scans found. Analyze a resume to see history here!</td></tr>`;
+                        return;
+                    }
+
+                    tbody.innerHTML = ""; // Clear loader
+
+                    globalHistoryData.forEach((item, index) => {
+                        const dateObj = new Date(item.created_at);
+                        const formattedDate = dateObj.toLocaleDateString() + ' <span style="color:var(--text-muted); font-size:0.8rem;">' + dateObj.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) + '</span>';
+                        let scoreColor = item.score >= 80 ? 'var(--secondary-glow)' : (item.score >= 60 ? '#F59E0B' : '#EF4444');
+
+                        let shortJobTarget = item.job_target.length > 40 ? item.job_target.substring(0, 40) + '...' : item.job_target;
+
+                        tbody.innerHTML += `
+                            <tr style="border-bottom: 1px solid rgba(255,255,255,0.05); transition: 0.3s;">
+                                <td style="padding: 15px;">${formattedDate}</td>
+                                <td style="padding: 15px; font-weight: 500; color: #E2E8F0;">${shortJobTarget}</td>
+                                <td style="padding: 15px; color: ${scoreColor}; font-weight: 700; font-size: 1.1rem;">${item.score}%</td>
+                                <td style="padding: 15px;">${item.keyword_match}</td>
+                                <td style="padding: 15px;">${item.readability}</td>
+                                <td style="padding: 15px; text-align: right;">
+                                    <div style="display: flex; justify-content: flex-end; gap: 8px;">
+                                        <button class="btn-primary-small" style="padding: 8px 16px; border-radius: 6px; border: none; background: rgba(79, 70, 229, 0.2); color: #A5B4FC; cursor: pointer; transition: 0.3s; font-weight: 600;" 
+                                                onmouseover="this.style.background='var(--primary-glow)'; this.style.color='white';" 
+                                                onmouseout="this.style.background='rgba(79, 70, 229, 0.2)'; this.style.color='#A5B4FC';"
+                                                onclick="openReportModal(${index})">
+                                            View
+                                        </button>
+                                        <button class="btn-primary-small" title="Delete Scan" style="padding: 8px 12px; border-radius: 6px; border: none; background: rgba(239, 68, 68, 0.15); color: #EF4444; cursor: pointer; transition: 0.3s;" 
+                                                onmouseover="this.style.background='#EF4444'; this.style.color='white';" 
+                                                onmouseout="this.style.background='rgba(239, 68, 68, 0.15)'; this.style.color='#EF4444';"
+                                                onclick="deleteResumeScan(${item.id})">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        `;
+                    });
+                } catch (e) {
+                    console.error("History fetch error:", e);
+                    document.getElementById('historyTableBody').innerHTML = `<tr><td colspan="6" style="text-align: center; padding: 20px; color: #EF4444;">Failed to connect to database.</td></tr>`;
+                }
+            }
+
+            // ADD THIS NEW DELETE FUNCTION RIGHT BELOW loadHistory()
+            window.deleteResumeScan = async function (id) {
+                if (!confirm("Are you sure you want to delete this scan history?")) return;
+                try {
+                    const response = await fetch(`http://127.0.0.1:8000/api/resume/history/${id}`, { method: 'DELETE' });
+                    if (response.ok) {
+                        loadHistory(); // Reload table after deletion
+                    } else {
+                        alert("Failed to delete record.");
+                    }
+                } catch (e) {
+                    console.error("Delete error:", e);
+                    alert("Error connecting to server.");
+                }
+            };
+
+            loadHistory();
+
+            // 3. Drag and Drop File UI Logic
+            const dropzone = document.getElementById('dropzone');
+            const fileInput = document.getElementById('resumeFile');
+            const fileNameDisplay = document.getElementById('fileNameDisplay');
+
+            ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+                dropzone.addEventListener(eventName, (e) => { e.preventDefault(); e.stopPropagation(); }, false);
+            });
+
+            ['dragenter', 'dragover'].forEach(eventName => {
+                dropzone.addEventListener(eventName, () => dropzone.classList.add('drag-active'), false);
+            });
+            ['dragleave', 'drop'].forEach(eventName => {
+                dropzone.addEventListener(eventName, () => dropzone.classList.remove('drag-active'), false);
+            });
+
+            dropzone.addEventListener('drop', (e) => {
+                let dt = e.dataTransfer;
+                if (dt.files.length) {
+                    fileInput.files = dt.files;
+                    updateFileName(dt.files[0].name);
+                }
+            });
+
+            fileInput.addEventListener('change', function () {
+                if (this.files.length) { updateFileName(this.files[0].name); }
+            });
+
+            function updateFileName(name) {
+                fileNameDisplay.innerHTML = `<i class="fas fa-file-pdf text-primary"></i> Selected: <strong>${name}</strong>`;
+                fileNameDisplay.style.color = '#10B981';
+            }
+
+            // 4. Form Submission & Backend Integration
+            const resumeForm = document.getElementById('resumeForm');
+
+            if (resumeForm) {
+                resumeForm.addEventListener('submit', async (e) => {
+                    e.preventDefault();
+
+                    const btn = document.getElementById('analyzeBtn');
+                    const text = btn.querySelector('.btn-text');
+                    const loader = btn.querySelector('.btn-loader');
+
+                    const emptyState = document.querySelector('.empty-state');
+                    const actualResultsOutput = document.getElementById('actualResultsOutput');
+                    const atsScoreText = document.getElementById('atsScoreText');
+                    const progressRing = document.getElementById('progressRing');
+                    const atsScoreLabel = document.getElementById('atsScoreLabel');
+                    const keywordScore = document.getElementById('keywordScore');
+                    const readabilityScore = document.getElementById('readabilityScore');
+
+                    text.style.display = 'none';
+                    loader.style.display = 'block';
+                    btn.classList.add('pulse-anim');
+                    btn.disabled = true;
+
+                    const file = document.getElementById('resumeFile').files[0];
+                    const jobDesc = document.getElementById('jobDescription').value;
+
+                    if (!file) {
+                        alert("Please select a resume file first.");
+                        text.style.display = 'block'; loader.style.display = 'none';
+                        btn.classList.remove('pulse-anim'); btn.disabled = false;
+                        return;
+                    }
+
+                    const formData = new FormData();
+                    formData.append("file", file);
+                    formData.append("job_description", jobDesc);
+                    formData.append("user_name", currentUserName);
+
+                    try {
+                        const response = await fetch('http://127.0.0.1:8000/api/resume/analyze', {
+                            method: 'POST',
+                            body: formData
+                        });
+
+                        if (!response.ok) throw new Error(`Backend rejected with status: ${response.status}`);
+
+                        const data = await response.json();
+
+                        emptyState.style.display = 'none';
+                        actualResultsOutput.style.display = 'block';
+
+                        keywordScore.innerText = data.keyword_match || "N/A";
+                        readabilityScore.innerText = data.readability || "N/A";
+
+                        let htmlContent = "";
+                        if (data.missing && data.missing.length > 0) {
+                            htmlContent += `<h4 style="color: var(--primary-glow); margin-bottom: 10px;"><i class="fas fa-exclamation-circle"></i> Missing Keywords/Skills</h4><ul style="margin-bottom: 20px; padding-left: 20px; color: #E2E8F0;">`;
+                            data.missing.forEach(item => htmlContent += `<li style="margin-bottom: 5px;">${item}</li>`);
+                            htmlContent += `</ul>`;
+                        }
+                        if (data.suggestions && data.suggestions.length > 0) {
+                            htmlContent += `<h4 style="color: var(--secondary-glow); margin-bottom: 10px;"><i class="fas fa-lightbulb"></i> AI Actionable Suggestions</h4><ul style="padding-left: 20px; color: #E2E8F0;">`;
+                            data.suggestions.forEach(item => htmlContent += `<li style="margin-bottom: 5px;">${item}</li>`);
+                            htmlContent += `</ul>`;
+                        }
+
+                        actualResultsOutput.innerHTML = `<div style="line-height: 1.6;">${htmlContent || JSON.stringify(data)}</div>`;
+
+                        const realScore = data.score || 0;
+                        atsScoreText.innerText = realScore + "%";
+
+                        const offset = 314 - (realScore / 100) * 314;
+                        progressRing.style.strokeDashoffset = offset;
+                        atsScoreLabel.innerText = "Analysis Complete";
+                        atsScoreLabel.style.color = "var(--secondary-glow)";
+
+                        // Refresh the Database Table UI!
+                        loadHistory();
+
+                    } catch (error) {
+                        console.error("Analysis Error:", error);
+                        alert(`Analysis Failed. Error: ${error.message}`);
+                    } finally {
+                        text.style.display = 'block';
+                        loader.style.display = 'none';
+                        btn.classList.remove('pulse-anim');
+                        btn.disabled = false;
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+
+</html>

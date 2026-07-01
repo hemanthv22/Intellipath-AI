@@ -1,0 +1,345 @@
+/* Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
+
+:root {
+    --bg-gradient: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
+    --bg-light: #f8fafc;
+    /* Added for the light side of the auth pages */
+    --glass-bg: rgba(255, 255, 255, 0.05);
+    --glass-border: rgba(255, 255, 255, 0.1);
+    --primary-glow: #6366f1;
+    --secondary-color: #8b5cf6;
+    --text-main: #f8fafc;
+    --text-muted: #94a3b8;
+    --dark: #111827;
+    /* Added for auth text */
+    --danger: #ef4444;
+    --success: #22c55e;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Inter', sans-serif;
+}
+
+body {
+    background: var(--bg-gradient);
+    color: var(--text-main);
+    min-height: 100vh;
+    overflow-x: hidden;
+}
+
+/* Ambient Background Animation */
+body::before {
+    content: '';
+    position: fixed;
+    top: -10%;
+    left: -10%;
+    width: 500px;
+    height: 500px;
+    background: var(--primary-glow);
+    filter: blur(150px);
+    opacity: 0.2;
+    border-radius: 50%;
+    z-index: -1;
+    animation: float 10s infinite alternate;
+}
+
+.glass-card {
+    background: var(--glass-bg);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid var(--glass-border);
+    border-radius: 16px;
+    padding: 2rem;
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+}
+
+/* Form Elements */
+input,
+select,
+textarea {
+    width: 100%;
+    padding: 12px 16px;
+    margin: 8px 0 20px;
+    background: rgba(0, 0, 0, 0.2);
+    border: 1px solid var(--glass-border);
+    border-radius: 8px;
+    color: var(--text-main);
+    outline: none;
+    transition: all 0.3s ease;
+}
+
+input:focus,
+select:focus {
+    border-color: var(--primary-glow);
+    box-shadow: 0 0 10px rgba(99, 102, 241, 0.2);
+}
+
+/* Buttons */
+.btn-primary {
+    width: 100%;
+    padding: 12px;
+    background: linear-gradient(90deg, var(--primary-glow), var(--secondary-color));
+    border: none;
+    border-radius: 8px;
+    color: white;
+    font-weight: 600;
+    cursor: pointer;
+    transition: opacity 0.3s, transform 0.2s;
+}
+
+.btn-primary:hover {
+    opacity: 0.9;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(99, 102, 241, 0.4);
+}
+
+.btn-outline {
+    width: 100%;
+    padding: 12px;
+    background: transparent;
+    border: 1px solid var(--glass-border);
+    border-radius: 8px;
+    color: var(--text-main);
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.btn-outline:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+@keyframes float {
+    0% {
+        transform: translate(0, 0);
+    }
+
+    100% {
+        transform: translate(100px, 50px);
+    }
+}
+
+
+/* ==========================================================================
+   AUTHENTICATION PAGES (Login & Signup Split-Screen)
+   ========================================================================== */
+
+/* Overrides the default dark body specifically for auth pages */
+.auth-body {
+    height: 100vh;
+    display: flex;
+    overflow: hidden;
+    background-color: var(--bg-light);
+}
+
+/* Removes the ambient glowing orb from the login page */
+.auth-body::before {
+    display: none;
+}
+
+.auth-container {
+    display: flex;
+    width: 100%;
+    height: 100%;
+}
+
+/* Left Side: Branding / Image */
+.auth-left {
+    flex: 1;
+    background: linear-gradient(135deg, rgba(79, 70, 229, 0.9) 0%, rgba(17, 24, 39, 0.95) 100%),
+        url('https://images.unsplash.com/photo-1522202176988-66273c2fd55f?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80') center/cover;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 60px;
+    color: #fff;
+    position: relative;
+}
+
+.auth-left .logo {
+    position: absolute;
+    top: 40px;
+    left: 60px;
+    font-size: 1.8rem;
+    font-weight: 800;
+    text-decoration: none;
+    color: #fff;
+}
+
+.auth-left .logo span {
+    color: var(--success);
+}
+
+.auth-left h1 {
+    font-size: 3.5rem;
+    font-weight: 800;
+    line-height: 1.2;
+    margin-bottom: 20px;
+}
+
+.auth-left p {
+    font-size: 1.1rem;
+    color: #D1D5DB;
+    max-width: 450px;
+    line-height: 1.6;
+}
+
+/* Right Side: Forms */
+.auth-right {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #fff;
+    overflow-y: auto;
+    color: var(--dark);
+    /* Light mode text for the form */
+}
+
+.auth-form-wrapper {
+    width: 100%;
+    max-width: 450px;
+    padding: 40px;
+    animation: fadeIn 0.5s ease-out forwards;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.auth-header {
+    margin-bottom: 30px;
+}
+
+.auth-header h2 {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 8px;
+    color: var(--dark);
+}
+
+.auth-header p {
+    color: var(--text-muted);
+    font-size: 0.95rem;
+}
+
+/* Override standard form styles just for the light auth form */
+.auth-form-wrapper .form-group {
+    margin-bottom: 20px;
+    position: relative;
+}
+
+.auth-form-wrapper .form-group label {
+    display: block;
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: var(--dark);
+}
+
+.auth-form-wrapper .form-control {
+    width: 100%;
+    padding: 12px 15px;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    transition: 0.3s;
+    background: #fff;
+    color: var(--dark);
+    margin: 0;
+    /* Reset standard margin */
+}
+
+.auth-form-wrapper .form-control:focus {
+    outline: none;
+    border-color: var(--primary-glow);
+    box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
+}
+
+.password-toggle {
+    position: absolute;
+    right: 15px;
+    top: 36px;
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.password-toggle:hover {
+    color: var(--primary-glow);
+}
+
+.form-options {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+    margin-top: 15px;
+    font-size: 0.85rem;
+}
+
+.switch-form-text {
+    text-align: center;
+    margin-top: 30px;
+    font-size: 0.9rem;
+    color: var(--text-muted);
+}
+
+.switch-form-text a {
+    color: var(--primary-glow);
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.switch-form-text a:hover {
+    text-decoration: underline;
+}
+
+.strength-meter {
+    height: 4px;
+    background-color: #eee;
+    border-radius: 2px;
+    margin-top: 8px;
+    display: none;
+}
+
+.strength-meter-fill {
+    height: 100%;
+    width: 0%;
+    transition: 0.3s;
+}
+
+/* Responsive Media Queries */
+@media (max-width: 900px) {
+    .auth-left {
+        display: none;
+    }
+
+    .auth-body {
+        overflow: auto;
+        background-color: var(--bg-light);
+    }
+
+    .auth-right {
+        background-color: transparent;
+        padding: 40px 20px;
+    }
+
+    .auth-form-wrapper {
+        background: #fff;
+        border-radius: 16px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        padding: 30px;
+    }
+}

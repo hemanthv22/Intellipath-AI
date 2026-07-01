@@ -1,0 +1,806 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - IntelliPath</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/dashboard.css">
+
+    <style>
+        /* --- LAYOUT FIXES --- */
+        :root {
+    --bg-main: #081228;
+    --bg-sidebar: #0b1020;
+    --bg-card: #111827;
+    --text-main: #ffffff;
+    --text-secondary: #9ca3af;
+    --border: #26324a;
+}
+
+body.light-mode {
+    --bg-main: #f5f7fb;
+    --bg-sidebar: #ffffff;
+    --bg-card: #ffffff;
+    --text-main: #111827;
+    --text-secondary: #6b7280;
+    --border: #e5e7eb;
+}
+
+body {
+    background: var(--bg-main);
+    color: var(--text-main);
+}
+
+.sidebar {
+    background: var(--bg-sidebar);
+}
+
+.topbar,
+.header {
+    background: var(--bg-sidebar);
+}
+
+.main-content,
+.dashboard-content,
+.dashboard-container {
+    background: var(--bg-main);
+}
+
+.stat-card,
+.career-card,
+.quick-actions,
+.action-card,
+.feature-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+}
+
+h1, h2, h3, h4, h5 {
+    color: var(--text-main);
+}
+
+p,
+span,
+label {
+    color: var(--text-secondary);
+}
+        html,
+        body.modern-dark-body {
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            overflow: hidden;
+            background: #0F172A;
+        }
+
+        .dashboard-layout {
+            height: 100vh;
+            display: flex;
+            overflow: hidden;
+        }
+
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* --- UPDATED CLEAN HEADER --- */
+        .topbar {
+            flex-shrink: 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 30px;
+            border-bottom: 1px solid var(--glass-border);
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(12px);
+            z-index: 20;
+        }
+
+        .topbar-left {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .topbar-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: white;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .topbar-actions {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 15px;
+        }
+
+        .ambient-blob {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(140px);
+            z-index: 0;
+            opacity: 0.25;
+            pointer-events: none;
+        }
+
+        .blob-1 {
+            top: -10%;
+            left: -10%;
+            width: 500px;
+            height: 500px;
+            background: rgba(79, 70, 229, 0.3);
+        }
+
+        .blob-2 {
+            bottom: -20%;
+            right: -10%;
+            width: 600px;
+            height: 600px;
+            background: rgba(16, 185, 129, 0.2);
+        }
+
+        .content-wrapper {
+            flex: 1;
+            overflow-y: auto;
+            position: relative;
+            z-index: 10;
+            width: 100%;
+            padding: 40px;
+            box-sizing: border-box;
+            scroll-behavior: smooth;
+        }
+
+        .content-wrapper::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .content-wrapper::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.1);
+        }
+
+        .content-wrapper::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+        }
+
+        /* --- DASHBOARD WIDGETS --- */
+        .welcome-header {
+            margin-bottom: 30px;
+            animation: fadeIn 0.4s ease forwards;
+        }
+
+        .welcome-header h1 {
+            color: white;
+            font-size: 2.2rem;
+            margin: 0 0 5px 0;
+        }
+
+        .welcome-header p {
+            color: #94A3B8;
+            font-size: 1.05rem;
+            margin: 0;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-bottom: 30px;
+            animation: slideUp 0.5s ease forwards;
+        }
+
+        .stat-card {
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: 0.3s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(255, 255, 255, 0.15);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+        }
+
+        .stat-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 15px;
+        }
+
+        .stat-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.2rem;
+        }
+
+        .stat-badge {
+            font-size: 0.75rem;
+            font-weight: 700;
+            padding: 4px 8px;
+            border-radius: 6px;
+        }
+
+        .stat-title {
+            color: #94A3B8;
+            font-size: 0.9rem;
+            font-weight: 500;
+            margin-bottom: 5px;
+        }
+
+        .stat-value {
+            color: white;
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin: 0;
+        }
+
+        .progress-bar-bg {
+            width: 100%;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 3px;
+            margin-top: 15px;
+            overflow: hidden;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary-glow), var(--accent-glow));
+            border-radius: 3px;
+            width: 0%;
+            transition: width 1s ease-out;
+        }
+
+        /* Main Content Grid */
+        .dashboard-main-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 20px;
+            animation: slideUp 0.7s ease forwards;
+        }
+
+        /* Career Path Card */
+        .career-card {
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .career-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            padding-bottom: 15px;
+        }
+
+        .career-header h2 {
+            color: white;
+            font-size: 1.3rem;
+            margin: 0;
+        }
+
+        .target-role-badge {
+            background: rgba(79, 70, 229, 0.1);
+            color: #A78BFA;
+            border: 1px solid rgba(79, 70, 229, 0.3);
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            display: inline-block;
+            margin-bottom: 20px;
+        }
+
+        .tech-stack {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .tech-pill {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #CBD5E1;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .tech-pill.mastered {
+            border-color: rgba(16, 185, 129, 0.4);
+            color: #34D399;
+        }
+
+        .tech-pill.learning {
+            border-color: rgba(56, 189, 248, 0.4);
+            color: #38BDF8;
+        }
+
+        /* Quick Actions Card */
+        .actions-card {
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .actions-card h2 {
+            color: white;
+            font-size: 1.3rem;
+            margin: 0 0 20px 0;
+        }
+
+        .action-btn {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+            transition: 0.3s;
+            text-align: left;
+        }
+
+        .action-btn:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(255, 255, 255, 0.15);
+            transform: translateX(5px);
+        }
+
+        .action-btn-content {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .action-btn-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            background: rgba(0, 0, 0, 0.3);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.1rem;
+            color: #38BDF8;
+        }
+
+        .action-btn h4 {
+            color: white;
+            margin: 0 0 3px 0;
+            font-size: 0.95rem;
+        }
+
+        .action-btn p {
+            color: #64748B;
+            margin: 0;
+            font-size: 0.8rem;
+        }
+
+        .btn-primary-glow {
+            background: linear-gradient(135deg, var(--primary-glow), var(--accent-glow));
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.3s;
+            box-shadow: 0 4px 15px rgba(79, 70, 229, 0.3);
+            font-size: 0.9rem;
+        }
+
+        .btn-primary-glow:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(79, 70, 229, 0.5);
+        }
+        .theme-toggle {
+    width: 45px;
+    height: 45px;
+    border: none;
+    border-radius: 50%;
+    background: rgba(99, 102, 241, 0.15);
+    color: #6366f1;
+    cursor: pointer;
+    margin-right: 15px;
+    transition: all 0.3s ease;
+}
+
+.light-mode {
+    background: #f5f7fb;
+    color: #111827;
+}
+
+.light-mode .sidebar,
+.light-mode .dashboard-card,
+.light-mode .career-path-card,
+.light-mode .quick-actions {
+    background: #ffffff;
+    color: #111827;
+    border: 1px solid #e5e7eb;
+}
+
+.light-mode .navbar {
+    background: #ffffff;
+}
+
+.light-mode .stat-card {
+    background: #ffffff;
+}
+
+:root {
+    --bg-primary: #0b1020;
+    --bg-secondary: #111827;
+    --card-bg: #172033;
+    --text-primary: #ffffff;
+}
+
+body.light-mode {
+    --bg-primary: #f5f7fb;
+    --bg-secondary: #ffffff;
+    --card-bg: #ffffff;
+    --text-primary: #111827;
+}
+
+.theme-toggle:hover {
+    transform: scale(1.05);
+}
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        @media (max-width: 1024px) {
+            .dashboard-main-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body class="modern-dark-body">
+    <div class="ambient-blob blob-1"></div>
+    <div class="ambient-blob blob-2"></div>
+
+    <div class="dashboard-layout">
+
+        <nav class="sidebar modern-glass-sidebar" id="appSidebar">
+            <div class="sidebar-header">
+                <div class="logo-icon"><i class="fas fa-layer-group"></i></div>
+                <h2 onclick="window.location.href='index.html'">Intelli<span>Path</span></h2>
+            </div>
+            <ul class="nav-links">
+                <li class="active" onclick="window.location.href='dashboard.html'"><i class="fas fa-home"></i> Dashboard
+                </li>
+                <li onclick="window.location.href='resume-creator.html'"><i class="fas fa-file-medical"></i> Resume
+                    Builder</li>
+                <li onclick="window.location.href='resume-builder.html'"><i class="fas fa-file-contract"></i> Resume
+                    Analyzer</li>
+                <li onclick="window.location.href='interview.html'"><i class="fas fa-microphone-alt"></i> AI Interview
+                </li>
+                <li onclick="window.location.href='assessment.html'"><i class="fas fa-chart-pie"></i> Skill Gap</li>
+                <li onclick="window.location.href='roadmap.html'"><i class="fas fa-map-signs"></i> Roadmap</li>
+                <li onclick="window.location.href='jobs.html'"><i class="fas fa-chart-line"></i> Find Jobs</li>
+                <li onclick="window.location.href='ai-assistant.html'"><i class="fas fa-robot"></i> AI Assistant</li>
+                <li onclick="window.location.href='settings.html'"><i class="fas fa-cog"></i> Settings</li>
+            </ul>
+            <ul class="nav-links sidebar-footer">
+                <li id="logoutBtn" class="logout-item"><i class="fas fa-sign-out-alt"></i> Logout</li>
+            </ul>
+        </nav>
+        
+
+        <main class="main-content">
+            <header class="topbar">
+                <div class="topbar-left">
+                    <h1 class="topbar-title">IntelliPath <span style="color: var(--primary-glow);">Dashboard</span></h1>
+                </div>
+                <button id="themeToggle" class="theme-toggle">
+    <i class="fas fa-moon"></i>
+</button>
+                <div class="topbar-actions">
+                    <div id="userProfileDisplay" class="modern-profile-pill" onclick="window.location.href='/settings.html'" style="cursor: pointer;">
+    <div class="avatar"><i class="fas fa-user"></i></div>
+    <span id="userNameText">Loading...</span>
+</div>
+                </div>
+            </header>
+
+            <div class="content-wrapper">
+
+                <div class="welcome-header">
+                    <h1>Welcome back, <span id="welcomeNameText" style="color: var(--primary-glow);">User</span></h1>
+                    <p>Here is your AI-curated career progress for today.</p>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <div class="stat-icon" style="background: rgba(139, 92, 246, 0.15); color: #A78BFA;"><i
+                                    class="fas fa-star"></i></div>
+                            <div class="stat-badge" style="background: rgba(16, 185, 129, 0.15); color: #34D399;"
+                                id="dashLevelBadge">Beginner</div>
+                        </div>
+                        <div>
+                            <div class="stat-title">Total Experience Points</div>
+                            <div class="stat-value" id="dashXP">--</div>
+                            <div class="progress-bar-bg">
+                                <div class="progress-bar-fill" id="xpProgressBar"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <div class="stat-icon" style="background: rgba(16, 185, 129, 0.15); color: #34D399;"><i
+                                    class="fas fa-check-circle"></i></div>
+                            <div class="stat-badge" style="background: rgba(255, 255, 255, 0.05); color: #94A3B8;">
+                                Steady</div>
+                        </div>
+                        <div>
+                            <div class="stat-title">Skills Mastered</div>
+                            <div class="stat-value" id="dashSkills">-- <span
+                                    style="font-size: 1rem; color: #64748B; font-weight: 500;">/ 30</span></div>
+                            <p style="color: #64748B; font-size: 0.8rem; margin: 8px 0 0 0;">Keep practicing to unlock
+                                advanced concepts.</p>
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <div class="stat-icon" style="background: rgba(245, 158, 11, 0.15); color: #FBBF24;"><i
+                                    class="fas fa-fire-alt"></i></div>
+                        </div>
+                        <div>
+                            <div class="stat-title">Learning Streak</div>
+                            <div class="stat-value" id="dashStreak">--</div>
+                            <p style="color: #64748B; font-size: 0.8rem; margin: 8px 0 0 0;">Login tomorrow to keep your
+                                streak alive!</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="dashboard-main-grid">
+
+                    <div class="career-card">
+                        <div class="career-header">
+                            <h2>Current Career Path</h2>
+                            <button class="btn-primary-glow" onclick="window.location.href='roadmap.html'">View
+                                Roadmap</button>
+                        </div>
+
+                        <div class="target-role-badge">Target Role: <span id="dashTargetRole">Select in Skill Gap</span>
+                        </div>
+
+                        <h4 style="color: #94A3B8; font-size: 0.9rem; margin: 0 0 10px 0; text-transform: uppercase;">
+                            Required Tech Stack</h4>
+                        <div class="tech-stack" id="dashTechStack">
+                            <div class="tech-pill"><i class="fas fa-circle-notch fa-spin"></i> Loading data...</div>
+                        </div>
+                    </div>
+
+                    <div class="actions-card">
+                        <h2>Quick Actions</h2>
+
+                        <button class="action-btn" onclick="window.location.href='resume-creator.html'">
+                            <div class="action-btn-content">
+                                <div class="action-btn-icon"><i class="fas fa-file-medical"></i></div>
+                                <div style="text-align: left;">
+                                    <h4>Build New Resume</h4>
+                                    <p>Create an ATS-friendly PDF</p>
+                                </div>
+                            </div>
+                            <i class="fas fa-chevron-right" style="color: #64748B;"></i>
+                        </button>
+
+                        <button class="action-btn" onclick="window.location.href='interview.html'">
+                            <div class="action-btn-content">
+                                <div class="action-btn-icon"
+                                    style="color: #F59E0B; background: rgba(245, 158, 11, 0.15);"><i
+                                        class="fas fa-microphone-alt"></i></div>
+                                <div style="text-align: left;">
+                                    <h4>Mock Interview</h4>
+                                    <p>Practice with AI Voice</p>
+                                </div>
+                            </div>
+                            <i class="fas fa-chevron-right" style="color: #64748B;"></i>
+                        </button>
+
+                        <button class="action-btn" onclick="window.location.href='jobs.html'">
+                            <div class="action-btn-content">
+                                <div class="action-btn-icon"
+                                    style="color: #10B981; background: rgba(16, 185, 129, 0.15);"><i
+                                        class="fas fa-briefcase"></i></div>
+                                <div style="text-align: left;">
+                                    <h4>Find Jobs</h4>
+                                    <p>View real-time openings</p>
+                                </div>
+                            </div>
+                            <i class="fas fa-chevron-right" style="color: #64748B;"></i>
+                        </button>
+                    </div>
+
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const userData = JSON.parse(localStorage.getItem('userData') || '{}');
+            const userName = userData.name || "Guest";
+
+            // Set Names in UI
+            if (document.getElementById('userNameText')) document.getElementById('userNameText').innerText = userName;
+            if (document.getElementById('welcomeNameText')) document.getElementById('welcomeNameText').innerText = userName.split(' ')[0]; // First name only
+            const toggleBtn = document.getElementById("themeToggle");
+
+toggleBtn.addEventListener("click", () => {
+    document.body.classList.toggle("light-mode");
+
+    const icon = toggleBtn.querySelector("i");
+
+    if (document.body.classList.contains("light-mode")) {
+        icon.className = "fas fa-sun";
+        localStorage.setItem("theme", "light");
+    } else {
+        icon.className = "fas fa-moon";
+        localStorage.setItem("theme", "dark");
+    }
+});
+
+if (localStorage.getItem("theme") === "light") {
+    document.body.classList.add("light-mode");
+    toggleBtn.querySelector("i").className = "fas fa-sun";
+}
+
+            // --- 1. FETCH LIVE PROGRESS STATS (Same as Roadmap) ---
+            async function loadDashboardStats() {
+                try {
+                    const response = await fetch(`http://127.0.0.1:8000/api/roadmap/progress/${userName}`);
+                    if (response.ok) {
+                        const data = await response.json();
+
+                        document.getElementById('dashLevelBadge').innerText = data.level;
+                        document.getElementById('dashXP').innerText = data.xp.toLocaleString();
+                        document.getElementById('dashSkills').innerText = `${data.skills} `;
+                        document.getElementById('dashStreak').innerText = `${data.streak} Days`;
+
+                        // Animate Progress bar (Assuming Max XP for this level is around 5000)
+                        setTimeout(() => {
+                            let percent = Math.min((data.xp / 5000) * 100, 100);
+                            if (percent < 5) percent = 5; // minimum visual bar
+                            document.getElementById('xpProgressBar').style.width = `${percent}%`;
+                        }, 300);
+
+                    }
+                } catch (error) {
+                    console.error("Error loading progress:", error);
+                }
+            }
+
+            // --- 2. FETCH LATEST SKILL GAP DATA ---
+            // We use this to show what Role they are targeting and what skills they need to master!
+            async function loadTargetRoleData() {
+                try {
+                    const response = await fetch(`http://127.0.0.1:8000/api/assessment/history/${userName}`);
+                    if (response.ok) {
+                        const historyData = await response.json();
+
+                        if (historyData.length > 0) {
+                            // Grab the most recent analysis
+                            const latest = historyData[0];
+                            document.getElementById('dashTargetRole').innerText = latest.role_title;
+
+                            // Parse missing skills to create the tech pills
+                            const missingArray = latest.missing_skills.split(',').map(s => s.trim()).filter(s => s);
+                            let pillsHtml = "";
+
+                            // We mock a few "mastered" skills, and show the missing ones as "learning"
+                            pillsHtml += `<div class="tech-pill mastered"><i class="fas fa-check-circle"></i> Python</div>`;
+                            pillsHtml += `<div class="tech-pill mastered"><i class="fas fa-check-circle"></i> Git</div>`;
+
+                            // Add up to 4 missing skills
+                            missingArray.slice(0, 4).forEach(skill => {
+                                pillsHtml += `<div class="tech-pill learning"><i class="fas fa-sync-alt fa-spin" style="font-size: 0.7rem;"></i> ${skill}</div>`;
+                            });
+
+                            document.getElementById('dashTechStack').innerHTML = pillsHtml;
+                        } else {
+                            document.getElementById('dashTechStack').innerHTML = `<p style="color: #64748B; font-size: 0.9rem;">Run a Skill Gap Analysis to see your stack.</p>`;
+                        }
+                    }
+                } catch (error) {
+                    console.error("Error loading target role:", error);
+                    document.getElementById('dashTechStack').innerHTML = `<p style="color: #EF4444; font-size: 0.9rem;">Server disconnected.</p>`;
+                }
+            }
+
+            // Run on load
+            loadDashboardStats();
+            loadTargetRoleData();
+
+            // --- LOGOUT LOGIC ---
+            const logoutBtn = document.getElementById('logoutBtn');
+            if (logoutBtn) {
+                logoutBtn.addEventListener('click', () => {
+                    localStorage.removeItem('userData');
+                    window.location.href = 'index.html';
+                });
+            }
+        });
+    </script>
+</body>
+
+</html>

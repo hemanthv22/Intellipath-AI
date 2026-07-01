@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Your Career Results - IntelliPath</title>
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .results-container {
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 20px;
+        }
+
+        .match-card {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 20px;
+            margin-bottom: 15px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+        }
+
+        .career-info h3 {
+            color: var(--primary-glow);
+            margin-bottom: 5px;
+        }
+
+        .match-percent {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--success);
+        }
+
+        /* Simple circle progress hack */
+        .circle-progress {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: conic-gradient(var(--primary-glow) var(--p), #333 0);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .circle-progress::after {
+            content: "";
+            width: 50px;
+            height: 50px;
+            background: #1e1b4b;
+            border-radius: 50%;
+            position: absolute;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="results-container">
+        <main class="glass-card">
+            <h1 style="text-align: center; margin-bottom: 2rem;">AI Career Match Analysis</h1>
+
+            <div id="resultsList">
+            </div>
+
+            <button class="btn-primary" onclick="window.location.href='dashboard.html'" style="margin-top: 2rem;">
+                Go to Dashboard
+            </button>
+        </main>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // 1. Grab the results we saved in the previous step
+            const resultsData = localStorage.getItem('assessment_results');
+            const list = document.getElementById('resultsList');
+
+            if (!resultsData) {
+                list.innerHTML = "<p style='text-align:center;'>No assessment data found. Please take the test first.</p>";
+                return;
+            }
+
+            const matches = JSON.parse(resultsData);
+
+            // 2. Dynamically render each match card
+            matches.forEach(item => {
+                // Determine a color based on the match percentage
+                const statusColor = item.match >= 80 ? 'var(--success)' :
+                    item.match >= 50 ? 'var(--primary-glow)' : 'var(--text-muted)';
+
+                list.innerHTML += `
+                <div class="match-card">
+                    <div class="career-info">
+                        <h3>${item.career}</h3>
+                        <p style="color: var(--text-muted)">Strength: ${item.match >= 75 ? 'Excellent' : 'Good'}</p>
+                    </div>
+                    <div class="match-percent" style="color: ${statusColor}">${item.match}%</div>
+                </div>
+            `;
+            });
+
+            // 3. Update the Dashboard score automatically
+            // If their top match is high, let's update their career score
+            if (matches.length > 0) {
+                localStorage.setItem('top_career_score', matches[0].match);
+                localStorage.setItem('top_career_path', matches[0].career);
+            }
+        });
+    </script>
+</body>
+
+</html>

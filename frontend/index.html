@@ -1,0 +1,993 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IntelliPath | AI Career Guidance</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        /* --- CSS VARIABLES & RESET --- */
+        :root {
+            --primary: #4F46E5;
+            --primary-hover: #4338CA;
+            --secondary: #10B981;
+            --secondary-hover: #059669;
+            --dark: #111827;
+            --text-gray: #4B5563;
+            --bg-light: #F9FAFB;
+            --white: #FFFFFF;
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-light);
+            color: var(--dark);
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        a {
+            text-decoration: none;
+        }
+
+        ul {
+            list-style: none;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .section-padding {
+            padding: 100px 0;
+        }
+
+        /* --- TYPOGRAPHY --- */
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: var(--dark);
+        }
+
+        .section-subtitle {
+            text-align: center;
+            color: var(--text-gray);
+            font-size: 1.1rem;
+            margin-bottom: 50px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* --- BUTTONS --- */
+        .btn {
+            display: inline-block;
+            padding: 14px 28px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: var(--transition);
+            border: none;
+        }
+
+        .btn-primary {
+            background-color: var(--primary);
+            color: var(--white);
+            box-shadow: 0 4px 14px 0 rgba(79, 70, 229, 0.39);
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-hover);
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background-color: var(--secondary);
+            color: var(--white);
+            box-shadow: 0 4px 14px 0 rgba(16, 185, 129, 0.39);
+        }
+
+        .btn-secondary:hover {
+            background-color: var(--secondary-hover);
+            transform: translateY(-2px);
+        }
+
+        .btn-outline {
+            background-color: transparent;
+            color: var(--white);
+            border: 2px solid var(--white);
+        }
+
+        .btn-outline:hover {
+            background-color: var(--white);
+            color: var(--dark);
+            transform: translateY(-2px);
+        }
+
+        /* --- NAVBAR --- */
+        .navbar {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            padding: 20px 0;
+            transition: var(--transition);
+            z-index: 1000;
+        }
+
+        .navbar.scrolled {
+            background-color: var(--white);
+            padding: 15px 0;
+            box-shadow: var(--shadow-md);
+        }
+
+        .navbar .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--white);
+            transition: var(--transition);
+        }
+
+        .navbar.scrolled .logo {
+            color: var(--primary);
+        }
+
+        .logo span {
+            color: var(--secondary);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 30px;
+            align-items: center;
+        }
+
+        .nav-links li a {
+            color: var(--white);
+            font-weight: 500;
+            position: relative;
+            transition: var(--transition);
+        }
+
+        .navbar.scrolled .nav-links li a {
+            color: var(--text-gray);
+        }
+
+        .navbar.scrolled .nav-links li a:hover,
+        .navbar.scrolled .nav-links li a.active {
+            color: var(--primary);
+        }
+
+        /* Hover Underline Animation */
+        .nav-links li a::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -5px;
+            left: 0;
+            background-color: var(--secondary);
+            transition: width 0.3s ease;
+        }
+
+        .nav-links li a:hover::after,
+        .nav-links li a.active::after {
+            width: 100%;
+        }
+
+        /* Mobile Menu Toggle */
+        .mobile-toggle {
+            display: none;
+            color: var(--white);
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        .navbar.scrolled .mobile-toggle {
+            color: var(--dark);
+        }
+
+        /* --- HERO SECTION --- */
+        .hero {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            position: relative;
+            background: linear-gradient(to right, rgba(17, 24, 39, 0.9), rgba(17, 24, 39, 0.6)),
+                url('https://images.unsplash.com/photo-1522071820081-009f0129c71c?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80') center/cover no-repeat;
+        }
+
+        .hero-content {
+            max-width: 800px;
+            color: var(--white);
+            opacity: 0;
+            animation: fadeInUp 1s ease forwards 0.5s;
+        }
+
+        .hero h1 {
+            font-size: 4rem;
+            font-weight: 800;
+            line-height: 1.2;
+            margin-bottom: 20px;
+            letter-spacing: -1px;
+        }
+
+        .hero p {
+            font-size: 1.25rem;
+            color: #D1D5DB;
+            margin-bottom: 40px;
+            max-width: 600px;
+        }
+
+        .hero-btns {
+            display: flex;
+            gap: 20px;
+        }
+
+        /* --- FEATURES SECTION --- */
+        .features {
+            background-color: var(--bg-light);
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            margin-top: 50px;
+        }
+
+        .feature-card {
+            background: var(--white);
+            padding: 40px 30px;
+            border-radius: 16px;
+            box-shadow: var(--shadow-sm);
+            transition: var(--transition);
+            border: 1px solid #E5E7EB;
+            opacity: 0;
+            transform: translateY(30px);
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: var(--shadow-lg);
+            border-color: var(--primary);
+        }
+
+        .feature-icon {
+            width: 60px;
+            height: 60px;
+            background-color: rgba(79, 70, 229, 0.1);
+            color: var(--primary);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            transition: var(--transition);
+        }
+
+        .feature-card:hover .feature-icon {
+            background-color: var(--primary);
+            color: var(--white);
+        }
+
+        .feature-card h3 {
+            font-size: 1.25rem;
+            margin-bottom: 10px;
+            color: var(--dark);
+        }
+
+        .feature-card p {
+            color: var(--text-gray);
+            font-size: 0.95rem;
+        }
+
+        /* --- ABOUT SECTION --- */
+        .about {
+            background-color: var(--white);
+        }
+
+        .about-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            align-items: center;
+        }
+
+        .about-img-container {
+            position: relative;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .about-img-container img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .about-text h2 {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            color: var(--dark);
+        }
+
+        .about-text p {
+            color: var(--text-gray);
+            margin-bottom: 20px;
+            font-size: 1.1rem;
+        }
+
+        .about-features {
+            margin-top: 30px;
+        }
+
+        .about-features li {
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-weight: 500;
+        }
+
+        .about-features i {
+            color: var(--secondary);
+            font-size: 1.2rem;
+        }
+
+        /* --- STATISTICS SECTION --- */
+        .stats {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-hover) 100%);
+            color: var(--white);
+            padding: 80px 0;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 40px;
+            text-align: center;
+        }
+
+        .stat-item {
+            padding: 20px;
+        }
+
+        .stat-number {
+            font-size: 3.5rem;
+            font-weight: 800;
+            margin-bottom: 10px;
+            color: var(--white);
+        }
+
+        .stat-text {
+            font-size: 1.1rem;
+            font-weight: 500;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        /* --- TESTIMONIALS SECTION --- */
+        .testimonials {
+            background-color: var(--bg-light);
+        }
+
+        .testimonials-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        .testimonial-card {
+            background: var(--white);
+            padding: 40px;
+            border-radius: 16px;
+            box-shadow: var(--shadow-md);
+            position: relative;
+        }
+
+        .fa-quote-left {
+            position: absolute;
+            top: 30px;
+            right: 30px;
+            font-size: 2rem;
+            color: rgba(79, 70, 229, 0.1);
+        }
+
+        .stars {
+            color: #FBBF24;
+            margin-bottom: 15px;
+        }
+
+        .testimonial-text {
+            color: var(--text-gray);
+            font-style: italic;
+            margin-bottom: 25px;
+        }
+
+        .student-profile {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .student-profile img {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .student-info h4 {
+            color: var(--dark);
+            font-weight: 600;
+        }
+
+        .student-info span {
+            color: var(--text-gray);
+            font-size: 0.85rem;
+        }
+
+        /* --- FOOTER --- */
+        footer {
+            background-color: var(--dark);
+            color: #9CA3AF;
+            padding: 80px 0 30px;
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: 40px;
+            margin-bottom: 60px;
+        }
+
+        .footer-brand h2 {
+            color: var(--white);
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+        }
+
+        .footer-brand span {
+            color: var(--secondary);
+        }
+
+        .social-links {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .social-links a {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background-color: rgba(255, 255, 255, 0.1);
+            color: var(--white);
+            border-radius: 50%;
+            transition: var(--transition);
+        }
+
+        .social-links a:hover {
+            background-color: var(--primary);
+            transform: translateY(-3px);
+        }
+
+        .footer-links h3 {
+            color: var(--white);
+            margin-bottom: 20px;
+            font-size: 1.2rem;
+        }
+
+        .footer-links ul li {
+            margin-bottom: 12px;
+        }
+
+        .footer-links ul li a {
+            color: #9CA3AF;
+            transition: var(--transition);
+        }
+
+        .footer-links ul li a:hover {
+            color: var(--secondary);
+            padding-left: 5px;
+        }
+
+        .footer-bottom {
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding-top: 30px;
+            text-align: center;
+            font-size: 0.9rem;
+        }
+
+        /* --- ANIMATIONS & CLASSES --- */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(40px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .reveal {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: all 0.8s ease-out;
+        }
+
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* --- MEDIA QUERIES --- */
+        @media (max-width: 992px) {
+            .hero h1 {
+                font-size: 3rem;
+            }
+
+            .about-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .about-img-container {
+                order: -1;
+            }
+
+            .footer-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .nav-links {
+                position: absolute;
+                top: 100%;
+                left: 0;
+                width: 100%;
+                background-color: var(--white);
+                flex-direction: column;
+                padding: 20px 0;
+                box-shadow: var(--shadow-md);
+                display: none;
+            }
+
+            .nav-links.active {
+                display: flex;
+            }
+
+            .nav-links li a {
+                color: var(--dark);
+            }
+
+            .navbar.scrolled .logo,
+            .logo {
+                color: var(--primary);
+            }
+
+            .mobile-toggle {
+                display: block;
+                color: var(--primary);
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+                gap: 30px;
+            }
+
+            .footer-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .hero-btns {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav class="navbar" id="navbar">
+        <div class="container">
+            <a href="#" class="logo">Intelli<span>Path</span></a>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="#home" class="active">Home</a></li>
+                <li><a href="#features">Features</a></li>
+                <li><a href="#about">About</a></li>
+                <li><a href="#testimonials">Testimonials</a></li>
+                <li><a href="login.html" class="btn btn-primary" style="color: white; padding: 10px 20px;">Login</a>
+                </li>
+                <li><a href="signup.html" class="btn btn-primary" style="color: white; padding: 10px 20px;">Sign Up</a>
+                </li>
+            </ul>
+            <i class="fas fa-bars mobile-toggle" id="mobileToggle"></i>
+        </div>
+    </nav>
+
+    <section class="hero" id="home">
+        <div class="container">
+            <div class="hero-content">
+                <h1>Explore Your Future <br> Career Path</h1>
+                <p>AI-powered guidance platform helping students discover the right skills, roadmap, and opportunities
+                    to launch their dream careers.</p>
+                <div class="hero-btns">
+                    <button class="btn btn-primary" id="userProfileDisplay" class="modern-profile-pill" onclick="window.location.href='/signup.html'" style="cursor: pointer;">Get Started Now</button>
+                    <button class="btn btn-outline">Learn More <i class="fas fa-arrow-right"
+                            style="margin-left: 8px;"></i></button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="features section-padding" id="features">
+        <div class="container">
+            <h2 class="section-title reveal">Why Choose IntelliPath?</h2>
+            <p class="section-subtitle reveal">Our AI-driven tools give you the competitive edge needed to navigate
+                today's dynamic job market.</p>
+
+            <div class="features-grid">
+                <div class="feature-card reveal" style="transition-delay: 0.1s;">
+                    <div class="feature-icon"><i class="fas fa-brain"></i></div>
+                    <h3>AI Career Guidance</h3>
+                    <p>Get personalized career path recommendations based on your unique strengths, interests, and
+                        market trends.</p>
+                </div>
+                <div class="feature-card reveal" style="transition-delay: 0.2s;">
+                    <div class="feature-icon"><i class="fas fa-chart-pie"></i></div>
+                    <h3>Skill Assessment</h3>
+                    <p>Identify your knowledge gaps with our adaptive testing engine and see how you stack up against
+                        industry standards.</p>
+                </div>
+                <div class="feature-card reveal" style="transition-delay: 0.3s;">
+                    <div class="feature-icon"><i class="fas fa-file-alt"></i></div>
+                    <h3>Resume Builder</h3>
+                    <p>Create ATS-friendly resumes that highlight your potential and get you past automated screening
+                        systems.</p>
+                </div>
+                <div class="feature-card reveal" style="transition-delay: 0.4s;">
+                    <div class="feature-icon"><i class="fas fa-route"></i></div>
+                    <h3>Learning Roadmaps</h3>
+                    <p>Follow structured, step-by-step learning paths curated by industry experts to master your target
+                        domain.</p>
+                </div>
+                <div class="feature-card reveal" style="transition-delay: 0.5s;">
+                    <div class="feature-icon"><i class="fas fa-briefcase"></i></div>
+                    <h3>Job Recommendation</h3>
+                    <p>Match instantly with jobs and internships that align perfectly with your newly acquired skills
+                        and career goals.</p>
+                </div>
+                <div class="feature-card reveal" style="transition-delay: 0.5s;">
+                    <div class="feature-icon"><i class="fas fa-briefcase"></i></div>
+                    <h3>AI-Powered Career Guidance Platform</h3>
+                    <p>Discover your ideal career path, assess your skills, build ATS-friendly resumes, follow personalized learning roadmaps, and connect with relevant job opportunities—all in one place.</p>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <section class="about section-padding" id="about">
+        <div class="container about-grid">
+            <div class="about-text reveal">
+                <h2>Empowering Students Through AI</h2>
+                <p>IntelliPath bridges the gap between academic learning and industry expectations. We believe every
+                    student deserves a clear, actionable path to success.</p>
+                <p>Our platform uses advanced machine learning algorithms to analyze your profile and generate a roadmap
+                    completely unique to you, saving you hundreds of hours of research.</p>
+
+                <ul class="about-features">
+                    <li><i class="fas fa-check-circle"></i> Data-driven career insights</li>
+                    <li><i class="fas fa-check-circle"></i> Mentorship from industry experts</li>
+                    <li><i class="fas fa-check-circle"></i> Real-time job market analytics</li>
+                </ul>
+                <br>
+                <button class="btn btn-secondary">Discover More</button>
+            </div>
+            <div class="about-img-container reveal">
+                <img src="https://images.unsplash.com/photo-1531482615713-2afd69097998?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80"
+                    alt="Students collaborating">
+            </div>
+        </div>
+    </section>
+
+    <section class="stats" id="stats">
+        <div class="container">
+            <div class="stats-grid">
+                <div class="stat-item reveal">
+                    <div class="stat-number" data-target="10000">0</div>
+                    <div class="stat-text">Students Guided</div>
+                </div>
+                <div class="stat-item reveal" style="transition-delay: 0.2s;">
+                    <div class="stat-number" data-target="500">0</div>
+                    <div class="stat-text">Career Paths Mapped</div>
+                </div>
+                <div class="stat-item reveal" style="transition-delay: 0.4s;">
+                    <div class="stat-number" data-target="95" data-suffix="%">0</div>
+                    <div class="stat-text">Success Rate</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="testimonials section-padding" id="testimonials">
+        <div class="container">
+            <h2 class="section-title reveal">What Our Users Say</h2>
+            <p class="section-subtitle reveal">Join thousands of students who have already transformed their careers
+                with IntelliPath.</p>
+
+            <div class="testimonials-grid">
+                <div class="testimonial-card reveal">
+                    <i class="fas fa-quote-left"></i>
+                    <div class="stars">
+                        <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i
+                            class="fas fa-star"></i><i class="fas fa-star"></i>
+                    </div>
+                    <p class="testimonial-text">"IntelliPath completely changed my trajectory. The AI suggested a
+                        transition into Data Engineering I hadn't considered, and the roadmap made it so easy to learn."
+                    </p>
+                    <div class="student-profile">
+                        <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-4.0.3&auto=format&fit=facearea&facepad=2&w=100&h=100&q=80"
+                            alt="Sarah J.">
+                        <div class="student-info">
+                            <h4>Sarah Jenkins</h4>
+                            <span>Data Engineer @ TechCorp</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="testimonial-card reveal" style="transition-delay: 0.2s;">
+                    <i class="fas fa-quote-left"></i>
+                    <div class="stars">
+                        <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i
+                            class="fas fa-star"></i><i class="fas fa-star"></i>
+                    </div>
+                    <p class="testimonial-text">"The Resume Builder tool is incredible. It highlighted exactly what ATS
+                        systems look for, and I started getting interview callbacks within a week."</p>
+                    <div class="student-profile">
+                        <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?ixlib=rb-4.0.3&auto=format&fit=facearea&facepad=2&w=100&h=100&q=80"
+                            alt="Michael T.">
+                        <div class="student-info">
+                            <h4>Michael Torres</h4>
+                            <span>Software Developer</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="testimonial-card reveal" style="transition-delay: 0.4s;">
+                    <i class="fas fa-quote-left"></i>
+                    <div class="stars">
+                        <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i
+                            class="fas fa-star"></i><i class="fas fa-star-half-alt"></i>
+                    </div>
+                    <p class="testimonial-text">"I was overwhelmed with what to learn first. The customized learning
+                        roadmap organized everything into weekly milestones. Best platform out there."</p>
+                    <div class="student-profile">
+                        <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&auto=format&fit=facearea&facepad=2&w=100&h=100&q=80"
+                            alt="David K.">
+                        <div class="student-info">
+                            <h4>David Kim</h4>
+                            <span>UX Designer</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <h2>Intelli<span>Path</span></h2>
+                    <p>Your AI-powered companion for career discovery, upskilling, and professional growth.</p>
+                    <div class="social-links">
+                        <a href="https://twitter.com"><i class="fab fa-twitter"></i></a>
+                        <a href="https://www.linkedin.com"><i class="fab fa-linkedin-in"></i></a>
+                        <a href="https://github.com"><i class="fab fa-github"></i></a>
+                        <a href="https://www.instagram.com"><i class="fab fa-instagram"></i></a>
+                    </div>
+                </div>
+
+                <div class="footer-links">
+                    <h3>Quick Links</h3>
+                    <ul>
+                        <li><a href="#home">Home</a></li>
+                        <li><a href="#features">Features</a></li>
+                        <li><a href="#about">About Us</a></li>
+                        <li><a href="#testimonials">Reviews</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-links">
+                    <h3>Resources</h3>
+                    <ul>
+                        <li><a href="#">Blog</a></li>
+                        <li><a href="#">Career Guides</a></li>
+                        <li><a href="#">Help Center</a></li>
+                        <li><a href="#">Privacy Policy</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-links">
+                    <h3>Contact Us</h3>
+                    <ul>
+                        <li><i class="fas fa-envelope" style="margin-right: 8px;"></i> intellipath@gmail.com</li>
+                        <li><i class="fas fa-phone-alt" style="margin-right: 8px;"></i> 94498 15275</li>
+                        <li><i class="fas fa-map-marker-alt" style="margin-right: 8px;"></i> Mysore University School of Engineering, Mysuru, Karnataka 570006
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <p>&copy; 2026 IntelliPath Career Guidance. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // 1. Sticky Navbar & Active Link Update on Scroll
+        const navbar = document.getElementById('navbar');
+        const sections = document.querySelectorAll('section');
+        const navLinks = document.querySelectorAll('.nav-links li a');
+
+        window.addEventListener('scroll', () => {
+            // Add shadow and background to navbar
+            if (window.scrollY > 50) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+
+            // Update active link based on scroll position
+            let current = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                const sectionHeight = section.clientHeight;
+                if (scrollY >= (sectionTop - sectionHeight / 3)) {
+                    current = section.getAttribute('id');
+                }
+            });
+
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href').includes(current) && current !== '') {
+                    link.classList.add('active');
+                }
+            });
+        });
+
+        // 2. Smooth Scrolling for Anchor Links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href');
+                if (targetId === '#') return;
+
+                const targetElement = document.querySelector(targetId);
+                if (targetElement) {
+                    // Close mobile menu if open
+                    document.getElementById('navLinks').classList.remove('active');
+
+                    window.scrollTo({
+                        top: targetElement.offsetTop - 70, // offset for navbar
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+
+        // 3. Mobile Hamburger Menu Toggle
+        const mobileToggle = document.getElementById('mobileToggle');
+        const navLinksContainer = document.getElementById('navLinks');
+
+        mobileToggle.addEventListener('click', () => {
+            navLinksContainer.classList.toggle('active');
+        });
+
+        // 4. Scroll Reveal Animations (Intersection Observer)
+        const revealElements = document.querySelectorAll('.reveal');
+
+        const revealCallback = (entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                    // Optional: Stop observing once revealed
+                    // observer.unobserve(entry.target); 
+                }
+            });
+        };
+
+        const revealOptions = {
+            threshold: 0.15, // Trigger when 15% of element is visible
+            rootMargin: "0px 0px -50px 0px"
+        };
+
+        const revealObserver = new IntersectionObserver(revealCallback, revealOptions);
+        revealElements.forEach(el => revealObserver.observe(el));
+
+        // 5. Animated Number Counters
+        const counters = document.querySelectorAll('.stat-number');
+        let animated = false;
+
+        const animateCounters = () => {
+            counters.forEach(counter => {
+                const target = +counter.getAttribute('data-target');
+                const suffix = counter.getAttribute('data-suffix') || '+';
+                const duration = 2000; // 2 seconds
+                const increment = target / (duration / 16); // 60fps
+
+                let current = 0;
+                const updateCounter = () => {
+                    current += increment;
+                    if (current < target) {
+                        counter.innerText = Math.ceil(current) + (target >= 1000 ? 'K+' : suffix);
+                        // Formatting K logic specifically for the 10000 -> 10K+
+                        if (target === 10000) {
+                            counter.innerText = Math.ceil(current / 1000) + 'K+';
+                        }
+                        requestAnimationFrame(updateCounter);
+                    } else {
+                        if (target === 10000) {
+                            counter.innerText = '10K+';
+                        } else {
+                            counter.innerText = target + suffix;
+                        }
+                    }
+                };
+                updateCounter();
+            });
+        };
+
+        // Trigger counter animation only when stats section is visible
+        const statsSection = document.getElementById('stats');
+        const statsObserver = new IntersectionObserver((entries) => {
+            if (entries[0].isIntersecting && !animated) {
+                animateCounters();
+                animated = true;
+            }
+        }, { threshold: 0.5 });
+
+        if (statsSection) {
+            statsObserver.observe(statsSection);
+        }
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,36 @@
+# --- Secrets and Environment ---
+.env
+# Ignore any actual PDFs users might upload during testing
+*.pdf
+# If you create an uploads folder later
+backend/uploads/
+
+# --- Python ---
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.python-version
+.venv/
+venv/
+ENV/
+env/
+build/
+dist/
+*.egg-info/
+
+# --- IDEs and Editors ---
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# --- Operating System ---
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# --- Database ---
+# If you ever use a local SQLite file for testing
+*.sqlite3
+*.db

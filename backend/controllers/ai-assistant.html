@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Assistant - IntelliPath</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/dashboard.css">
+    <style>
+        /* Custom Chat UI Styles */
+        .chat-window {
+            height: 55vh; overflow-y: auto; padding: 20px; 
+            display: flex; flex-direction: column; gap: 15px;
+            background: rgba(0,0,0,0.1); border-radius: 12px;
+            border: 1px solid var(--glass-border);
+            scroll-behavior: smooth;
+        }
+        .message-bubble {
+            max-width: 80%; padding: 15px 20px; border-radius: 12px; 
+            line-height: 1.6; font-size: 0.95rem;
+        }
+        .ai-message {
+            background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255,255,255,0.1);
+            align-self: flex-start; border-bottom-left-radius: 4px; color: #ddd;
+        }
+        .user-message {
+            background: var(--primary); color: #fff;
+            align-self: flex-end; border-bottom-right-radius: 4px;
+        }
+        .chat-input-wrapper { display: flex; gap: 10px; margin-top: 15px; }
+        .chat-input {
+            flex: 1; padding: 15px; background: rgba(0,0,0,0.2); 
+            border: 1px solid var(--glass-border); border-radius: 8px; color: #fff; font-size: 1rem;
+        }
+        .chat-input:focus { outline: none; border-color: var(--primary-glow); }
+        .loading-dots { display: none; color: var(--text-muted); font-style: italic; margin-left: 10px; }
+    </style>
+</head>
+<body>
+    <div class="dashboard-layout">
+        
+        <nav class="sidebar glass-card" style="border-radius: 0; border-top: none; border-bottom: none; border-left: none;">
+            <h2 style="color: var(--primary-glow); cursor: pointer;" onclick="window.location.href='index.html'">IntelliPath</h2>
+            <ul class="nav-links">
+                <li onclick="window.location.href='dashboard.html'">Dashboard</li>
+                <li onclick="window.location.href='resume-builder.html'">Resume Builder</li>
+                <li onclick="window.location.href='interview.html'">AI Interview</li>
+                <li onclick="window.location.href='assessment.html'">Skill Gap</li>
+                <li onclick="window.location.href='roadmap.html'">Roadmap</li>
+                <li>Job Analytics</li>
+                <li>Mentor</li>
+                <li class="active" onclick="window.location.href='ai-assistant.html'">AI Assistant</li>
+                <li id="settingsBtn">Settings</li>
+            </ul>
+            <ul class="nav-links" style="margin-top: auto;">
+                <li id="logoutBtn" style="color: var(--danger); font-weight: bold;">Logout</li>
+            </ul>
+        </nav>
+
+        <main class="main-content">
+            <header class="topbar">
+                <input type="text" class="search-bar" placeholder="🔍 Search...">
+                <div style="display: flex; gap: 15px; align-items: center;">
+                    <span style="cursor: pointer;">🔔</span>
+                    <div id="userProfileDisplay" style="background: var(--glass-bg); padding: 8px 15px; border-radius: 20px; border: 1px solid var(--glass-border); display: flex; align-items: center; gap: 8px;">
+                        <span>👤</span>
+                        <span id="userNameText">Loading...</span>
+                    </div>
+                </div>
+            </header>
+
+            <div style="padding-top: 20px;">
+                <h2 style="margin-bottom: 5px;">Career Assistant</h2>
+                <p style="color: var(--text-muted); margin-bottom: 20px;">Ask me anything about your career path, interview prep, or technical concepts.</p>
+
+                <div class="glass-card" style="max-width: 1000px;">
+                    
+                    <div id="chatWindow" class="chat-window">
+                        <div class="message-bubble ai-message">
+                            Hello! I am your IntelliPath Career Assistant. How can I help you today?
+                        </div>
+                    </div>
+
+                    <div class="chat-input-wrapper">
+                        <input type="text" id="chatInput" class="chat-input" placeholder="Type your message here... (Press Enter to send)">
+                        <button id="sendBtn" class="btn-primary" style="width: auto; padding: 0 30px;">Send ➔</button>
+                    </div>
+                    <div id="loadingIndicator" class="loading-dots">Assistant is typing...</div>
+
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="js/api.js"></script>
+    <script src="js/assistant.js"></script>
+</body>
+</html>

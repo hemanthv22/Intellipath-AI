@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - IntelliPath</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body class="auth-body">
+    <div class="auth-container">
+        <div class="auth-left">
+            <a href="index.html" class="logo">Intelli<span>Path</span></a>
+            <div>
+                <h1>Welcome Back!</h1>
+                <p>Log in to access your AI-powered career roadmap, resume tools, and interview preparation.</p>
+            </div>
+        </div>
+
+        <div class="auth-right">
+            <div class="auth-form-wrapper">
+                <div class="auth-header">
+                    <h2>Sign In</h2>
+                    <p>Please enter your details to continue.</p>
+                </div>
+
+                <form id="loginForm">
+                    <div class="form-group">
+                        <label for="loginEmail">Email</label>
+                        <input type="email" id="loginEmail" class="form-control" placeholder="Enter your email"
+                            required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="loginPassword">Password</label>
+                        <input type="password" id="loginPassword" class="form-control" placeholder="••••••••" required>
+                        <i class="fas fa-eye password-toggle" onclick="togglePassword('loginPassword', this)"></i>
+                    </div>
+
+                    <div class="form-options">
+                        <label style="display:flex; align-items:center; gap:8px; cursor:pointer;">
+                            <input type="checkbox"> Remember me
+                        </label>
+                        <a href="forgot-password.html" style="color:var(--primary); font-weight:600; text-decoration:none;">Forgot
+                            Password?</a>
+                    </div>
+
+                    <button type="submit" class="btn-primary" style="width: 100%; padding: 14px;" id="loginBtn">Sign
+                        In</button>
+                </form>
+
+                <div class="switch-form-text">
+                    Don't have an account? <a href="signup.html">Sign Up</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="js/api.js"></script>
+    <script src="js/auth.js"></script>
+</body>
+
+</html>
